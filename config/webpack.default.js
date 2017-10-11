@@ -8,7 +8,7 @@ const rootDir = (...paths) => path.join(__dirname, '..', ...paths);
 module.exports = {
   context: rootDir('src'),
   entry: {
-    index: './index.js'
+    whistle: './whistle/whistle.js'
   },
   output: {
     path: rootDir('docs'),
@@ -22,9 +22,9 @@ module.exports = {
   },
   plugins: [
     html({
-      template: rootDir('public/index.html'),
+      template: rootDir('src/whistle/whistle.html'),
       inject: 'body',
-      chunks: ['index']
+      chunks: ['whistle']
     })
   ],
   module: {
