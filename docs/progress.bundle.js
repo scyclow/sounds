@@ -60,34 +60,37 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 0);
+/******/ 	return __webpack_require__(__webpack_require__.s = 4);
 /******/ })
 /************************************************************************/
-/******/ ([
-/* 0 */
+/******/ ({
+
+/***/ 4:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-__webpack_require__(1);
+__webpack_require__(5);
 
 var AudioContext = window.AudioContext || window.webkitAudioContext;
 
 function createSource() {
+  var srcType = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'sine';
+
   var ctx = new AudioContext();
 
   var source = ctx.createOscillator();
   var gain = ctx.createGain();
-  var panner = ctx.createStereoPanner();
 
   source.connect(gain);
-  gain.connect(panner);
-  panner.connect(ctx.destination);
+  gain.connect(ctx.destination);
 
+  // window.gain = gain
   gain.gain.value = 0.04;
+  source.type = srcType;
   source.start();
-  return { source: source, panner: panner };
+  return source;
 }
 
 function randomDirection() {
@@ -102,48 +105,51 @@ function randomDirection() {
 function changeTone(src, maxFreq, time) {
   setTimeout(function () {
     src.frequency.value = Math.random() * maxFreq;
-    changeTone(src, maxFreq, time);
+    console.log(time);
+    changeTone(src, maxFreq, time * randomDirection(0.2));
   }, Math.random() * time);
 }
 
-function changePanner(panner, direction) {
-  var d = direction;
-  setInterval(function () {
-    d = d * -1;
-    panner.pan.value = d;
-  }, 2500);
-}
+changeTone(createSource('triangle'), 550, 200); // A
+changeTone(createSource(), 1308, 300); // C
+changeTone(createSource(), 3296, 400); // E
 
-var _createSource = createSource(),
-    source1 = _createSource.source,
-    panner1 = _createSource.panner;
+// window.s = createSource()
 
-var _createSource2 = createSource(),
-    source2 = _createSource2.source,
-    panner2 = _createSource2.panner;
+// const s1 = createSource('triangle')
+// const s2 = createSource()
+// const s3 = createSource()
 
-changeTone(source1, 3500, 300);
-changeTone(source2, 4000, 200);
+// s1.frequency.value =
+// s2.frequency.value = 654/2
+// s3.frequency.value = 1648/2
 
-changePanner(panner1, 1);
-changePanner(panner2, -1);
 
-// changeTone(createSource(), 1750, 300)
-// changeTone(createSource(), 2000, 200)
-// changeTone(createSource(), 100, 50)
+// var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+// var osc = audioCtx.createOscillator();
 
-// const src3 = createSource()
-// changeTone(createSource(), 3500, 200);
-// changeTone(createSource(), 4000, 750);
-// changeTone(createSource(), 400, 500);
-
-//////////////////////////////////////
+// const frequency = 440;
+// // Buffer size of 4096, 0 input channels, 1 output channel.
+// const scriptProcessorNode = audioCtx.createScriptProcessorNode(4096, 0, 1);
+// scriptProcessorNode.onaudioprocess = function(event) {
+//     const startTime = audioCtx.currentTime;
+//     const samples = event.outputBuffer.getChannelData(0);
+//     for (var i = 0; i < 4096; i++) {
+//         const t = startTime + (i / audioCtx.sampleRate);
+//         // samples is a Float32Array
+//         samples[i] = Math.sin(t * frequency);
+//     }
+// };
+// osc.connect(scriptProcessorNode)
+// scriptProcessorNode.connect(audioCtx.destination);
 
 /***/ }),
-/* 1 */
+
+/***/ 5:
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ })
-/******/ ]);
+
+/******/ });

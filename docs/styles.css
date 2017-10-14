@@ -1,6 +1,4 @@
 body {
-  background: -webkit-linear-gradient(135deg, #ff660c, #63b7a6);
-  background: -o-linear-gradient(135deg, #ff660c, #63b7a6);
   background: linear-gradient(-45deg, #ff660c, #63b7a6);
   background-size: 13% 160%;
   -webkit-animation: Gradient 5s cubic-bezier(0.26, 0.68, 0.82, 0.5) infinite;
