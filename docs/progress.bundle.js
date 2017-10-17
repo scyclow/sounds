@@ -102,46 +102,91 @@ function randomDirection() {
   return 1 + logAmmount * direction;
 }
 
-function changeTone(src, maxFreq, time) {
+function changeTone(maxFreq, time, cb) {
   setTimeout(function () {
-    src.frequency.value = Math.random() * maxFreq;
-    console.log(time);
-    changeTone(src, maxFreq, time * randomDirection(0.2));
+    var newTime = time * randomDirection(0.2);
+    var newFreq = Math.random() * maxFreq;
+
+    cb(newFreq, time);
+    changeTone(maxFreq, newTime, cb);
   }, Math.random() * time);
 }
 
-changeTone(createSource('triangle'), 550, 200); // A
-changeTone(createSource(), 1308, 300); // C
-changeTone(createSource(), 3296, 400); // E
+var low = document.getElementById('low');
+var medium = document.getElementById('medium');
+var high = document.getElementById('high');
 
-// window.s = createSource()
+var srcA = createSource('triangle');
+var srcC = createSource();
+var srcE = createSource();
 
-// const s1 = createSource('triangle')
-// const s2 = createSource()
-// const s3 = createSource()
+// A
+var maxFreqA = 550;
+var startTimeA = 2000;
+changeTone(maxFreqA, startTimeA, function (freq, time) {
+  console.log(freq, time);
+  srcA.frequency.value = freq;
+  low.style.left = freq / maxFreqA * window.innerWidth + 'px';
+  low.style.top = Math.random() * window.innerHeight + 'px';
+  low.style.transition = time + 'ms';
+});
 
-// s1.frequency.value =
-// s2.frequency.value = 654/2
-// s3.frequency.value = 1648/2
+// C
+var maxFreqC = 1308;
+var startTimeC = 200;
+changeTone(maxFreqC, startTimeC, function (freq, time) {
+  console.log(freq, time);
+  srcC.frequency.value = freq;
+  medium.style.left = freq / maxFreqC * window.innerWidth + 'px';
+  medium.style.top = Math.random() * window.innerHeight + 'px';
+  medium.style.transition = time + 'ms';
+});
 
+// E
+var maxFreqE = 3296;
+var startTimeE = 600;
+changeTone(maxFreqE, startTimeC, function (freq, time) {
+  console.log(freq, time);
+  srcE.frequency.value = freq;
+  high.style.left = freq / maxFreqE * window.innerWidth + 'px';
+  high.style.top = Math.random() * window.innerHeight + 'px';
+  high.style.transition = time + 'ms';
+});
 
-// var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-// var osc = audioCtx.createOscillator();
+// I like how in this example the space continues to expand as the ratio of time/startTime increases past 1
 
-// const frequency = 440;
-// // Buffer size of 4096, 0 input channels, 1 output channel.
-// const scriptProcessorNode = audioCtx.createScriptProcessorNode(4096, 0, 1);
-// scriptProcessorNode.onaudioprocess = function(event) {
-//     const startTime = audioCtx.currentTime;
-//     const samples = event.outputBuffer.getChannelData(0);
-//     for (var i = 0; i < 4096; i++) {
-//         const t = startTime + (i / audioCtx.sampleRate);
-//         // samples is a Float32Array
-//         samples[i] = Math.sin(t * frequency);
-//     }
-// };
-// osc.connect(scriptProcessorNode)
-// scriptProcessorNode.connect(audioCtx.destination);
+// // A
+// const maxFreqA = 550
+// const startTimeA = 2000
+// changeTone(maxFreqA, startTimeA, (freq, time) => {
+//   console.log(freq, time)
+//   srcA.frequency.value = freq
+//   low.style.left = `${(freq/maxFreqA) * window.innerWidth}px`
+//   low.style.top = `${(time/startTimeA) * window.innerHeight}px`
+//   low.style.transition = `${time}ms`
+// })
+
+// // C
+// const maxFreqC = 1308
+// const startTimeC = 200
+// changeTone(maxFreqC, startTimeC, (freq, time) => {
+//   console.log(freq, time)
+//   srcC.frequency.value = freq
+//   medium.style.left = `${(freq/maxFreqC) * window.innerWidth}px`
+//   medium.style.top = `${(time/startTimeC) * window.innerHeight}px`
+//   medium.style.transition = `${time}ms`
+// })
+
+// // E
+// const maxFreqE = 3296
+// const startTimeE = 600
+// changeTone(maxFreqE, startTimeC, (freq, time) => {
+//   console.log(freq, time)
+//   srcE.frequency.value = freq
+//   high.style.left = `${(freq/maxFreqE) * window.innerWidth}px`
+//   high.style.top = `${(time/startTimeE) * window.innerHeight}px`
+//   high.style.transition = `${time}ms`
+// })
 
 /***/ }),
 
