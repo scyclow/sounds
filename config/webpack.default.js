@@ -11,6 +11,7 @@ module.exports = {
     whistle: './whistle/whistle.js',
     spin: './spin/spin.js',
     progress: './progress/progress.js',
+    snapshot: './snapshot/snapshot.js',
   },
   output: {
     path: rootDir('docs'),
@@ -23,6 +24,11 @@ module.exports = {
     ]
   },
   plugins: [
+    html({
+      template: rootDir('src/index.html'),
+      filename: 'index.html',
+      chunks: []
+    }),
     html({
       template: rootDir('src/whistle/whistle.html'),
       filename: 'whistle.html',
@@ -40,7 +46,14 @@ module.exports = {
       filename: 'progress.html',
       inject: 'body',
       chunks: ['progress']
+    }),
+    html({
+      template: rootDir('src/snapshot/snapshot.html'),
+      filename: 'snapshot.html',
+      inject: 'body',
+      chunks: ['snapshot']
     })
+
   ],
   module: {
     rules: [
