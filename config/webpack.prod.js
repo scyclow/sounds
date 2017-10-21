@@ -18,26 +18,17 @@ defaults.plugins.push(
 
 defaults.module.rules.push({
   test: /\.css$/,
-  loader: ExtractTextPlugin.extract({
-    fallback: require.resolve('style-loader'),
-    use: [
-      {
-        loader: require.resolve('css-loader'),
-        options: {
-          importLoaders: 1,
-        },
+  use: [
+    'style-loader',
+    'css-loader',
+    {
+      loader: require.resolve('postcss-loader'),
+      options: {
+        ident: 'postcss', // https://webpack.js.org/guides/migrating/#complex-options
+        plugins: postcss,
       },
-      {
-        loader: require.resolve('postcss-loader'),
-        options: {
-          ident: 'postcss',
-          plugins: postcss,
-        },
-      },
-    ],
-  })
+    }
+  ]
 });
-
-defaults.plugins.push(new ExtractTextPlugin('styles.css'))
 
 module.exports = defaults;
