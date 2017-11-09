@@ -1,18 +1,41 @@
 'use strict';
 
 const path = require('path');
+const fs = require('fs');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const html = (params) => new HtmlWebpackPlugin(params);
 const rootDir = (...paths) => path.join(__dirname, '..', ...paths);
 
+const notProjects = [
+  'utils',
+  'index.html'
+]
+const ignoreDirs = dir => !notProjects.includes(dir)
+
+const projects = fs.readdirSync('./src').filter(ignoreDirs);
+
+const entry = projects.reduce((entry, project) => {
+  entry[project] = `./${project}/${project}.js`;
+  return entry
+}, {})
+const plugins = projects.map(project => {
+  return html({
+    template: rootDir(`src/${project}/${project}.html`),
+    filename: project + '.html',
+    inject: 'body',
+    chunks: [project]
+  })
+})
+
+plugins.push(html({
+  template: rootDir('src/index.html'),
+  filename: 'index.html',
+  chunks: []
+}))
+
 module.exports = {
   context: rootDir('src'),
-  entry: {
-    whistle: './whistle/whistle.js',
-    spin: './spin/spin.js',
-    progress: './progress/progress.js',
-    snapshot: './snapshot/snapshot.js',
-  },
+  entry,
   output: {
     path: rootDir('docs'),
     filename: '[name].bundle.js'
@@ -23,38 +46,7 @@ module.exports = {
       'node_modules'
     ]
   },
-  plugins: [
-    html({
-      template: rootDir('src/index.html'),
-      filename: 'index.html',
-      chunks: []
-    }),
-    html({
-      template: rootDir('src/whistle/whistle.html'),
-      filename: 'whistle.html',
-      inject: 'body',
-      chunks: ['whistle']
-    }),
-    html({
-      template: rootDir('src/spin/spin.html'),
-      filename: 'spin.html',
-      inject: 'body',
-      chunks: ['spin']
-    }),
-    html({
-      template: rootDir('src/progress/progress.html'),
-      filename: 'progress.html',
-      inject: 'body',
-      chunks: ['progress']
-    }),
-    html({
-      template: rootDir('src/snapshot/snapshot.html'),
-      filename: 'snapshot.html',
-      inject: 'body',
-      chunks: ['snapshot']
-    })
-
-  ],
+  plugins,
   module: {
     rules: [
       {

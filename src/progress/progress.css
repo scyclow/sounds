@@ -4,7 +4,7 @@ body {
 
 
 .shape {
-  opacity: 0.5;
+
   transition: 200ms;
   margin: 10px;
   width: 100px;

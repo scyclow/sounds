@@ -3,6 +3,11 @@
 import './progress.css'
 
 const AudioContext = window.AudioContext || window.webkitAudioContext;
+const MAX_VOLUME = 0.04
+const MAX_TIME = 15000
+const MIN_TIME = 17
+const MIN_FREQ = 800
+const MAX_FREQ = 3000
 function createSource(srcType?: string = 'sine') {
   const ctx = new AudioContext();
 
@@ -13,10 +18,10 @@ function createSource(srcType?: string = 'sine') {
   gain.connect(ctx.destination)
 
   // window.gain = gain
-  gain.gain.value = 0.04
+  gain.gain.value = MAX_VOLUME
   source.type = srcType
   source.start()
-  return source;
+  return {source, gain};
 }
 
 function randomDirection(magnitude?: number = 1): number {
@@ -27,7 +32,10 @@ function randomDirection(magnitude?: number = 1): number {
 }
 
 function changeTone (maxFreq, time, cb) {
-  const newTime = Math.max(17, time * randomDirection(0.2))
+  const newTime = Math.min(
+    Math.max(MIN_TIME, time * randomDirection(0.2)),
+    MAX_TIME
+  )
   const newFreq = Math.random() * maxFreq
   cb(newFreq, time)
   setTimeout(
@@ -36,18 +44,45 @@ function changeTone (maxFreq, time, cb) {
   )
 }
 
+const fadeOut = (gain, style, time, freq) => {
+  gain.gain.value = MAX_VOLUME * 2
+  style.opacity = 0.5
+
+  // should be some value between 0 and .05
+  const fadeRate = (freq/MAX_FREQ) * 0.03
+  const amt = 1 - fadeRate
+
+  if (amt > 1) {
+    console.error('This is going to be too loud...')
+    console.error(amt)
+    debugger
+    throw 'NOOOOOOOO'
+    return
+  }
+
+  const interval = setInterval(
+    () => {
+      gain.gain.value = gain.gain.value * amt;
+      style.opacity = style.opacity * amt
+    },
+    time / 100
+  )
+
+  setTimeout(() => clearInterval(interval), time - 5)
+}
+
 const low = document.getElementById('low')
 const medium = document.getElementById('medium')
 const high = document.getElementById('high')
 
-const srcA = createSource()
-const srcC = createSource()
-const srcE = createSource()
+const { source: srcA, gain: gainA } = createSource()
+const { source: srcC, gain: gainC } = createSource()
+const { source: srcE, gain: gainE } = createSource()
 
 
 // A
-const maxFreqA = 550
-const startTimeA = 700
+const maxFreqA = MIN_FREQ
+const startTimeA = 800
 const maxSizeA = 40
 low.style.maxWidth = `${maxSizeA}vw`
 low.style.maxHeight = `${maxSizeA}vw`
@@ -61,15 +96,16 @@ changeTone(maxFreqA, startTimeA, (freq, time) => {
   low.style.left = `${Math.random() * (window.innerWidth - size/2)}px`
   low.style.height = `${size}px`
   low.style.width = `${size}px`
+  low.zIndex = Math.round(size)
   low.style.filter = `hue-rotate(${freq/maxFreqA * 360}deg)`
   // low.innerHTML = `${freq}, ${time}`
 
-
+  fadeOut(gainA, low.style, time, freq)
 })
 
 // C
-const maxFreqC = 1300
-const startTimeC = 200
+const maxFreqC = MIN_FREQ * 2
+const startTimeC = 2000
 const maxSizeC = 30
 medium.style.maxWidth = `${maxSizeC}vw`
 medium.style.maxHeight = `${maxSizeC}vw`
@@ -82,14 +118,17 @@ changeTone(maxFreqC, startTimeC, (freq, time) => {
   medium.style.left = `${Math.random() * (window.innerWidth - size/2)}px`
   medium.style.height = `${size}px`
   medium.style.width = `${size}px`
+  medium.zIndex = Math.round(size)
+
   medium.style.filter = `hue-rotate(${freq/maxFreqA * 360}deg)`
   // medium.innerHTML = `${freq}, ${time}`
+  fadeOut(gainC, medium.style, time, freq)
 
 })
 
 // E
-const maxFreqE = 3200
-const startTimeE = 600
+const maxFreqE = MIN_FREQ * 4
+const startTimeE = 2600
 const maxSizeE = 20
 high.style.maxWidth = `${maxSizeE}vw`
 high.style.maxHeight = `${maxSizeE}vw`
@@ -102,8 +141,12 @@ changeTone(maxFreqE, startTimeE, (freq, time) => {
   high.style.left = `${Math.random() * (window.innerWidth - size/2)}px`
   high.style.height = `${size}px`
   high.style.width = `${size}px`
+  high.zIndex = Math.round(size)
+
   high.style.filter = `hue-rotate(${freq/maxFreqA * 360}deg)`
   // high.innerHTML = `${freq}, ${time}`
+  fadeOut(gainE, high.style, time, freq)
+
 })
 
 
