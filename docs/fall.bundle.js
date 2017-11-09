@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 10);
+/******/ 	return __webpack_require__(__webpack_require__.s = 3);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -600,218 +600,118 @@ module.exports = function (css) {
 
 
 /***/ }),
-/* 3 */,
-/* 4 */,
-/* 5 */,
-/* 6 */,
-/* 7 */,
-/* 8 */,
-/* 9 */,
-/* 10 */
+/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-__webpack_require__(11);
+__webpack_require__(4);
 
-var AudioContext = window.AudioContext || window.webkitAudioContext;
+var _colors = __webpack_require__(6);
 
-var MAX_VOLUME = 0.04;
-var MAX_TIME = 15000;
-var MIN_TIME = 17;
-var MIN_FREQ = 800;
-var MAX_FREQ = 3000;
-function createSource() {
-  var srcType = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'sine';
+// const ctx = new AudioContext();
+// const oscillator = ctx.createOscillator()
+// const gain = ctx.createGain()
 
-  var ctx = new AudioContext();
+// oscillator.connect(gain)
+// gain.connect(ctx.destination)
 
-  var source = ctx.createOscillator();
-  var gain = ctx.createGain();
+// gain.gain.value = 1
+// oscillator.frequency.value = 18
 
-  source.connect(gain);
-  gain.connect(ctx.destination);
+// window.gain = gain
+// window.oscillator = oscillator
 
-  // window.gain = gain
-  gain.gain.value = MAX_VOLUME;
-  source.type = srcType;
-  source.start();
-  return { source: source, gain: gain };
-}
+// oscillator.start(0)
 
-function randomDirection() {
-  var magnitude = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
+var noop = function noop() {};
+function times(n) {
+  var cb = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : noop;
 
-  var direction = Math.random() < 0.5 ? -1 : 1;
-  var ammount = Math.random() * magnitude;
-  var logAmmount = direction < 0 ? ammount : ammount / (1 - ammount);
-  return 1 + logAmmount * direction;
-}
-
-function changeTone(maxFreq, time, cb) {
-  var newTime = Math.min(Math.max(MIN_TIME, time * randomDirection(0.2)), MAX_TIME);
-  var newFreq = Math.random() * maxFreq;
-  cb(newFreq, time);
-  setTimeout(function () {
-    return changeTone(maxFreq, newTime, cb);
-  }, Math.random() * time);
-}
-
-var fadeOut = function fadeOut(gain, style, time, freq) {
-  gain.gain.value = MAX_VOLUME * 2;
-  style.opacity = 0.5;
-
-  // should be some value between 0 and .05
-  var fadeRate = freq / MAX_FREQ * 0.03;
-  var amt = 1 - fadeRate;
-
-  if (amt > 1) {
-    console.error('This is going to be too loud...');
-    console.error(amt);
-    debugger;
-    throw 'NOOOOOOOO';
-    return;
+  var out = [];
+  for (var i = 0; i < n; i++) {
+    out.push(cb(i));
   }
+  return out;
+}
 
-  var interval = setInterval(function () {
-    gain.gain.value = gain.gain.value * amt;
-    style.opacity = style.opacity * amt;
-  }, time / 100);
+function btwn(x, y) {
+  var high = Math.max(x, y);
+  var low = Math.min(x, y);
 
-  setTimeout(function () {
-    return clearInterval(interval);
-  }, time - 5);
+  return Math.random() * (high - low) + low;
+}
+
+var elemsPerWidth = 12;
+var elemsPerHeight = 7;
+var movementTime = 1200;
+var movement = 80;
+
+var elems = [];
+function renderElem(_ref) {
+  var left = _ref.left,
+      top = _ref.top,
+      size = _ref.size;
+
+  var elem = document.createElement('div');
+  Object.assign(elem.style, {
+    backgroundColor: (0, _colors.applyToHex)('#ff0000', { h: btwn(75, 30) }),
+    opacity: btwn(0.9, 0.75),
+    height: size + 'px',
+    width: size + 'px',
+    position: 'absolute',
+    top: top * btwn(0.9, 1.1) + 'px',
+    left: left * btwn(0.9, 1.1) + 'px',
+    borderRadius: '100%',
+    transition: btwn(movementTime * 1.6, movementTime * 1.9) + 'ms',
+    zIndex: Math.round(Math.random() * 20)
+  });
+  elem.setAttribute('class', 'elem');
+  document.getElementById('container').appendChild(elem);
+  elems.push(elem);
+}
+
+times(elemsPerWidth, function (w) {
+  times(elemsPerHeight, function (h) {
+    var size = btwn(125, 225);
+    var left = w * (window.innerWidth / elemsPerWidth) - 20;
+    var top = h * (window.innerHeight / elemsPerHeight) - 20;
+    renderElem({ left: left, top: top, size: size });
+  });
+});
+
+var direction = 1;
+
+var changeDirection = function changeDirection() {
+  elems.forEach(function (e) {
+    // if (direction === -1) e.style.transition = `${0}ms`
+    // else e.style.transition = `${btwn(movementTime * 1.6, movementTime * 1.9)}ms`
+    setTimeout(function () {
+      if (direction === -1) {
+        e.style.marginTop = 0;
+        e.style.marginLeft = 0;
+      } else {
+        e.style.opacity = btwn(0.9, 0.75);
+        e.style.marginTop = Math.random() * movement + 'px';
+        e.style.marginLeft = Math.random() * movement + 'px';
+      }
+    }, Math.random() * movementTime);
+  });
+  console.log(direction);
+  direction = direction * -1;
 };
-
-var low = document.getElementById('low');
-var medium = document.getElementById('medium');
-var high = document.getElementById('high');
-
-var _createSource = createSource(),
-    srcA = _createSource.source,
-    gainA = _createSource.gain;
-
-var _createSource2 = createSource(),
-    srcC = _createSource2.source,
-    gainC = _createSource2.gain;
-
-var _createSource3 = createSource(),
-    srcE = _createSource3.source,
-    gainE = _createSource3.gain;
-
-// A
-
-
-var maxFreqA = MIN_FREQ;
-var startTimeA = 800;
-var maxSizeA = 40;
-low.style.maxWidth = maxSizeA + 'vw';
-low.style.maxHeight = maxSizeA + 'vw';
-changeTone(maxFreqA, startTimeA, function (freq, time) {
-  console.log(freq, time);
-  var size = (1 - freq / maxFreqA) * maxSizeA / 100 * window.innerWidth;
-
-  srcA.frequency.value = freq;
-  low.style.transition = time * 1.5 + 'ms';
-  low.style.top = (1 - freq / maxFreqA) * (window.innerHeight - size / 2) + 'px';
-  low.style.left = Math.random() * (window.innerWidth - size / 2) + 'px';
-  low.style.height = size + 'px';
-  low.style.width = size + 'px';
-  low.zIndex = Math.round(size);
-  low.style.filter = 'hue-rotate(' + freq / maxFreqA * 360 + 'deg)';
-  // low.innerHTML = `${freq}, ${time}`
-
-  fadeOut(gainA, low.style, time, freq);
-});
-
-// C
-var maxFreqC = MIN_FREQ * 2;
-var startTimeC = 2000;
-var maxSizeC = 30;
-medium.style.maxWidth = maxSizeC + 'vw';
-medium.style.maxHeight = maxSizeC + 'vw';
-changeTone(maxFreqC, startTimeC, function (freq, time) {
-  console.log(freq, time);
-  srcC.frequency.value = freq;
-  var size = (1 - freq / maxFreqC) * maxSizeC / 100 * window.innerWidth;
-  medium.style.transition = time * 1.5 + 'ms';
-  medium.style.top = (1 - freq / maxFreqC) * (window.innerHeight - size / 2) + 'px';
-  medium.style.left = Math.random() * (window.innerWidth - size / 2) + 'px';
-  medium.style.height = size + 'px';
-  medium.style.width = size + 'px';
-  medium.zIndex = Math.round(size);
-
-  medium.style.filter = 'hue-rotate(' + freq / maxFreqA * 360 + 'deg)';
-  // medium.innerHTML = `${freq}, ${time}`
-  fadeOut(gainC, medium.style, time, freq);
-});
-
-// E
-var maxFreqE = MIN_FREQ * 4;
-var startTimeE = 2600;
-var maxSizeE = 20;
-high.style.maxWidth = maxSizeE + 'vw';
-high.style.maxHeight = maxSizeE + 'vw';
-changeTone(maxFreqE, startTimeE, function (freq, time) {
-  console.log(freq, time);
-  srcE.frequency.value = freq;
-  var size = (1 - freq / maxFreqE) * maxSizeE / 100 * window.innerWidth;
-  high.style.transition = time * 1.5 + 'ms';
-  high.style.top = (1 - freq / maxFreqE) * (window.innerHeight - size / 2) + 'px';
-  high.style.left = Math.random() * (window.innerWidth - size / 2) + 'px';
-  high.style.height = size + 'px';
-  high.style.width = size + 'px';
-  high.zIndex = Math.round(size);
-
-  high.style.filter = 'hue-rotate(' + freq / maxFreqA * 360 + 'deg)';
-  // high.innerHTML = `${freq}, ${time}`
-  fadeOut(gainE, high.style, time, freq);
-});
-
-// I like how in this example the space continues to expand as the ratio of time/startTime increases past 1
-
-// // A
-// const maxFreqA = 550
-// const startTimeA = 2000
-// changeTone(maxFreqA, startTimeA, (freq, time) => {
-//   console.log(freq, time)
-//   srcA.frequency.value = freq
-//   low.style.left = `${(freq/maxFreqA) * window.innerWidth}px`
-//   low.style.top = `${(time/startTimeA) * window.innerHeight}px`
-//   low.style.transition = `${time}ms`
-// })
-
-// // C
-// const maxFreqC = 1308
-// const startTimeC = 200
-// changeTone(maxFreqC, startTimeC, (freq, time) => {
-//   console.log(freq, time)
-//   srcC.frequency.value = freq
-//   medium.style.left = `${(freq/maxFreqC) * window.innerWidth}px`
-//   medium.style.top = `${(time/startTimeC) * window.innerHeight}px`
-//   medium.style.transition = `${time}ms`
-// })
-
-// // E
-// const maxFreqE = 3296
-// const startTimeE = 600
-// changeTone(maxFreqE, startTimeC, (freq, time) => {
-//   console.log(freq, time)
-//   srcE.frequency.value = freq
-//   high.style.left = `${(freq/maxFreqE) * window.innerWidth}px`
-//   high.style.top = `${(time/startTimeE) * window.innerHeight}px`
-//   high.style.transition = `${time}ms`
-// })
+changeDirection();
+setInterval(changeDirection, movementTime);
 
 /***/ }),
-/* 11 */
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(12);
+var content = __webpack_require__(5);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // Prepare cssTransformation
 var transform;
@@ -825,8 +725,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/postcss-loader/lib/index.js??postcss!./progress.css", function() {
-			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/postcss-loader/lib/index.js??postcss!./progress.css");
+		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/postcss-loader/lib/index.js??postcss!./fall.css", function() {
+			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/postcss-loader/lib/index.js??postcss!./fall.css");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -836,7 +736,7 @@ if(false) {
 }
 
 /***/ }),
-/* 12 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(0)(undefined);
@@ -844,10 +744,203 @@ exports = module.exports = __webpack_require__(0)(undefined);
 
 
 // module
-exports.push([module.i, "body {\n  background-color: #001515\n}\n\n\n.shape {\n\n  -webkit-transition: 200ms;\n\n  transition: 200ms;\n  margin: 10px;\n  width: 100px;\n  height: 100px;\n  position: absolute;\n  border-radius: 100%;\n  background-color: #900;\n}\n", ""]);
+exports.push([module.i, "* {\n  padding: 0;\n  margin: 0;\n}\nbody {\n  background-color: #001515;\n}\n#background {\n  background: -webkit-gradient(linear, left top, right top, from(#00ffb9), to(#ffa702));\n  background: linear-gradient(90deg, #00ffb9, #ffa702);\n  background-size: 150% 150%;\n  -webkit-animation: Animate 80s ease infinite;\n          animation: Animate 80s ease infinite;\n  height: 100vh;\n  width: 100vw;\n  position: absolute;\n  overflow: hidden;\n}\n\n@-webkit-keyframes Animate {\n    0%{background-position:0% 50%}\n    50%{background-position:100% 50%}\n    100%{background-position:0% 50%}\n}\n", ""]);
 
 // exports
 
+
+/***/ }),
+/* 6 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+//  weak
+
+var max = Math.max.bind(Math);
+var min = Math.min.bind(Math);
+
+function between(n, high, low) {
+  return max(min(n, high), low);
+}
+
+function wrap(number, max) {
+  return number >= max ? wrap(number - max, max) : number < 0 ? wrap(max + number, max) : number;
+}
+
+function numToHex(num) {
+  var hex = Math.round(Math.min(num, 255)).toString(16);
+  return (hex.length === 1 ? '0' + hex : hex).toUpperCase();
+}
+
+var hexToNum = function hexToNum(hex) {
+  return parseInt(hex, 16);
+};
+
+var rgbToHex = function rgbToHex(_ref) {
+  var r = _ref.r,
+      g = _ref.g,
+      b = _ref.b;
+  return '#' + numToHex(r) + numToHex(g) + numToHex(b);
+};
+
+var hexToRgb = function hexToRgb(hex) {
+  return hex.length === 7 ? {
+    r: hexToNum(hex.slice(1, 3)),
+    g: hexToNum(hex.slice(3, 5)),
+    b: hexToNum(hex.slice(5, 7))
+  } : {
+    r: hexToNum(hex.slice(1, 2).repeat(2)),
+    g: hexToNum(hex.slice(2, 3).repeat(2)),
+    b: hexToNum(hex.slice(3, 4).repeat(2))
+  };
+};
+
+var round = function round(n) {
+  var decimals = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+  return +n.toFixed(decimals);
+};
+
+// http://www.rapidtables.com/convert/color/rgb-to-hsv.htm
+function rgbToHsv(_ref2) {
+  var r = _ref2.r,
+      g = _ref2.g,
+      b = _ref2.b;
+
+  r /= 255;
+  g /= 255;
+  b /= 255;
+
+  var max = Math.max(r, g, b);
+  var min = Math.min(r, g, b);
+  var diff = max - min;
+  var value = max;
+  var saturation = max ? diff / max : 0;
+
+  var hue = 0;
+  if (!diff) {}
+  // For some reason website says "mod 6". This returns wonky
+  // values, while + 6 appears to return the correct values.
+  else if (r === max) {
+      hue = (g - b) / diff + 6;
+    } else if (g === max) {
+      hue = (b - r) / diff + 2;
+    } else if (b === max) {
+      hue = (r - g) / diff + 4;
+    }
+
+  hue *= 60;
+
+  return {
+    h: hue === 360 ? 0 : hue,
+    s: round(saturation, 2),
+    v: round(value, 2)
+  };
+}
+
+function hsvToRgb(_ref3) {
+  var h = _ref3.h,
+      s = _ref3.s,
+      v = _ref3.v;
+
+  h /= 60;
+  var c = v * s;
+  var x = c * (1 - Math.abs(h % 2 - 1));
+  var m = v - c;
+
+  var r = void 0,
+      g = void 0,
+      b = void 0;
+  switch (Math.floor(h)) {
+    case 0:
+    case 6:
+      r = c;g = x;b = 0;break;
+    case 1:
+      r = x;g = c;b = 0;break;
+    case 2:
+      r = 0;g = c;b = x;break;
+    case 3:
+      r = 0;g = x;b = c;break;
+    case 4:
+      r = x;g = 0;b = c;break;
+    case 5:
+      r = c;g = 0;b = x;break;
+  }
+
+  return {
+    r: round((r + m) * 255),
+    g: round((g + m) * 255),
+    b: round((b + m) * 255)
+  };
+}
+
+var hexToHsv = function hexToHsv(hex) {
+  return rgbToHsv(hexToRgb(hex));
+};
+var hsvToHex = function hsvToHex(hsv) {
+  return rgbToHex(hsvToRgb(hsv));
+};
+
+function applyToHex(hex, _ref4) {
+  var _ref4$h = _ref4.h,
+      h = _ref4$h === undefined ? 0 : _ref4$h,
+      _ref4$s = _ref4.s,
+      s = _ref4$s === undefined ? 0 : _ref4$s,
+      _ref4$v = _ref4.v,
+      v = _ref4$v === undefined ? 0 : _ref4$v;
+  var mod = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 1;
+
+  var hsv = hexToHsv(hex);
+  return hsvToHex({
+    h: wrap(hsv.h + h / mod, 360),
+    s: between(hsv.s + s / mod, 1, 0),
+    v: between(hsv.v + v / mod, 1, 0)
+  });
+}
+
+// experimental
+function setHsvOnHex(hex, _ref5) {
+  var h = _ref5.h,
+      s = _ref5.s,
+      v = _ref5.v;
+
+  var hsv = hexToHsv(hex);
+  return hsvToHex({
+    h: !isNaN(h) ? wrap(h, 360) : hsv.h,
+    s: !isNaN(s) ? between(s, 1, 0) : hsv.s,
+    v: !isNaN(v) ? between(v, 1, 0) : hsv.v
+  });
+}
+
+var randMax = function randMax(ceil) {
+  return Math.floor(Math.random() * ceil);
+};
+
+function randHex() {
+  var color = '#';
+  for (var i = 0; i < 6; i++) {
+    color += randMax(16).toString(16);
+  }
+  return color.toUpperCase();
+}
+
+function polarize(hex) {
+  return applyToHex(hex, { h: 180 });
+}
+
+module.exports = {
+  applyToHex: applyToHex,
+  __experimental__: { setHsvOnHex: setHsvOnHex },
+  hexToNum: hexToNum,
+  hexToRgb: hexToRgb,
+  hsvToRgb: hsvToRgb,
+  numToHex: numToHex,
+  rgbToHex: rgbToHex,
+  rgbToHsv: rgbToHsv,
+  randHex: randHex,
+  polarize: polarize
+};
 
 /***/ })
 /******/ ]);

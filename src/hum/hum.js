@@ -71,4 +71,6 @@ src1.frequency.value = 50
 src2.frequency.value = 55
 src3.frequency.value = 2000
 
+gain1.gain.value = MAX_VOLUME * 8
+gain2.gain.value = MAX_VOLUME * 8
 gain3.gain.value = MAX_VOLUME/24

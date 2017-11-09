@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 10);
+/******/ 	return __webpack_require__(__webpack_require__.s = 7);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -604,24 +604,63 @@ module.exports = function (css) {
 /* 4 */,
 /* 5 */,
 /* 6 */,
-/* 7 */,
-/* 8 */,
-/* 9 */,
-/* 10 */
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-__webpack_require__(11);
+__webpack_require__(8);
+
+function times(n) {
+  var cb = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : noop;
+
+  var out = [];
+  for (var i = 0; i < n; i++) {
+    out.push(cb(i));
+  }
+  return out;
+}
+
+function btwn(x, y) {
+  var high = Math.max(x, y);
+  var low = Math.min(x, y);
+
+  return Math.random() * (high - low) + low;
+}
+
+var baseWidth = 1020;
+var baseHeight = 680;
+var adjW = window.innerWidth / baseWidth;
+var adjH = window.innerHeight / baseHeight;
+
+var squares = times(40, function (n) {
+  var div = document.createElement('div');
+  var height = btwn(50, 200) * adjH;
+  var width = btwn(50, 200) * adjW;
+  Object.assign(div.style, {
+    height: height + 'px',
+    width: width + 'px',
+    top: Math.random() * (window.innerHeight - height) + 'px',
+    left: Math.random() * (window.innerWidth - width) + 'px'
+  });
+  div.setAttribute('class', 'thing');
+  document.getElementById('container').appendChild(div);
+  return div;
+});
+
+var direction = 1;
+setInterval(function () {
+  direction = direction * -1;
+  squares.forEach(function (square) {
+    square.style.marginTop = direction * btwn(0, 5) + 'px';
+    square.style.marginLeft = direction * btwn(0, 5) + 'px';
+  });
+}, 1000 / 60);
 
 var AudioContext = window.AudioContext || window.webkitAudioContext;
-
 var MAX_VOLUME = 0.04;
-var MAX_TIME = 15000;
-var MIN_TIME = 17;
-var MIN_FREQ = 800;
-var MAX_FREQ = 3000;
+
 function createSource() {
   var srcType = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'sine';
 
@@ -640,178 +679,34 @@ function createSource() {
   return { source: source, gain: gain };
 }
 
-function randomDirection() {
-  var magnitude = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
-
-  var direction = Math.random() < 0.5 ? -1 : 1;
-  var ammount = Math.random() * magnitude;
-  var logAmmount = direction < 0 ? ammount : ammount / (1 - ammount);
-  return 1 + logAmmount * direction;
-}
-
-function changeTone(maxFreq, time, cb) {
-  var newTime = Math.min(Math.max(MIN_TIME, time * randomDirection(0.2)), MAX_TIME);
-  var newFreq = Math.random() * maxFreq;
-  cb(newFreq, time);
-  setTimeout(function () {
-    return changeTone(maxFreq, newTime, cb);
-  }, Math.random() * time);
-}
-
-var fadeOut = function fadeOut(gain, style, time, freq) {
-  gain.gain.value = MAX_VOLUME * 2;
-  style.opacity = 0.5;
-
-  // should be some value between 0 and .05
-  var fadeRate = freq / MAX_FREQ * 0.03;
-  var amt = 1 - fadeRate;
-
-  if (amt > 1) {
-    console.error('This is going to be too loud...');
-    console.error(amt);
-    debugger;
-    throw 'NOOOOOOOO';
-    return;
-  }
-
-  var interval = setInterval(function () {
-    gain.gain.value = gain.gain.value * amt;
-    style.opacity = style.opacity * amt;
-  }, time / 100);
-
-  setTimeout(function () {
-    return clearInterval(interval);
-  }, time - 5);
-};
-
-var low = document.getElementById('low');
-var medium = document.getElementById('medium');
-var high = document.getElementById('high');
-
 var _createSource = createSource(),
-    srcA = _createSource.source,
-    gainA = _createSource.gain;
+    src1 = _createSource.source,
+    gain1 = _createSource.gain;
 
 var _createSource2 = createSource(),
-    srcC = _createSource2.source,
-    gainC = _createSource2.gain;
+    src2 = _createSource2.source,
+    gain2 = _createSource2.gain;
 
 var _createSource3 = createSource(),
-    srcE = _createSource3.source,
-    gainE = _createSource3.gain;
+    src3 = _createSource3.source,
+    gain3 = _createSource3.gain;
 
-// A
+src1.frequency.value = 50;
+src2.frequency.value = 55;
+src3.frequency.value = 2000;
 
-
-var maxFreqA = MIN_FREQ;
-var startTimeA = 800;
-var maxSizeA = 40;
-low.style.maxWidth = maxSizeA + 'vw';
-low.style.maxHeight = maxSizeA + 'vw';
-changeTone(maxFreqA, startTimeA, function (freq, time) {
-  console.log(freq, time);
-  var size = (1 - freq / maxFreqA) * maxSizeA / 100 * window.innerWidth;
-
-  srcA.frequency.value = freq;
-  low.style.transition = time * 1.5 + 'ms';
-  low.style.top = (1 - freq / maxFreqA) * (window.innerHeight - size / 2) + 'px';
-  low.style.left = Math.random() * (window.innerWidth - size / 2) + 'px';
-  low.style.height = size + 'px';
-  low.style.width = size + 'px';
-  low.zIndex = Math.round(size);
-  low.style.filter = 'hue-rotate(' + freq / maxFreqA * 360 + 'deg)';
-  // low.innerHTML = `${freq}, ${time}`
-
-  fadeOut(gainA, low.style, time, freq);
-});
-
-// C
-var maxFreqC = MIN_FREQ * 2;
-var startTimeC = 2000;
-var maxSizeC = 30;
-medium.style.maxWidth = maxSizeC + 'vw';
-medium.style.maxHeight = maxSizeC + 'vw';
-changeTone(maxFreqC, startTimeC, function (freq, time) {
-  console.log(freq, time);
-  srcC.frequency.value = freq;
-  var size = (1 - freq / maxFreqC) * maxSizeC / 100 * window.innerWidth;
-  medium.style.transition = time * 1.5 + 'ms';
-  medium.style.top = (1 - freq / maxFreqC) * (window.innerHeight - size / 2) + 'px';
-  medium.style.left = Math.random() * (window.innerWidth - size / 2) + 'px';
-  medium.style.height = size + 'px';
-  medium.style.width = size + 'px';
-  medium.zIndex = Math.round(size);
-
-  medium.style.filter = 'hue-rotate(' + freq / maxFreqA * 360 + 'deg)';
-  // medium.innerHTML = `${freq}, ${time}`
-  fadeOut(gainC, medium.style, time, freq);
-});
-
-// E
-var maxFreqE = MIN_FREQ * 4;
-var startTimeE = 2600;
-var maxSizeE = 20;
-high.style.maxWidth = maxSizeE + 'vw';
-high.style.maxHeight = maxSizeE + 'vw';
-changeTone(maxFreqE, startTimeE, function (freq, time) {
-  console.log(freq, time);
-  srcE.frequency.value = freq;
-  var size = (1 - freq / maxFreqE) * maxSizeE / 100 * window.innerWidth;
-  high.style.transition = time * 1.5 + 'ms';
-  high.style.top = (1 - freq / maxFreqE) * (window.innerHeight - size / 2) + 'px';
-  high.style.left = Math.random() * (window.innerWidth - size / 2) + 'px';
-  high.style.height = size + 'px';
-  high.style.width = size + 'px';
-  high.zIndex = Math.round(size);
-
-  high.style.filter = 'hue-rotate(' + freq / maxFreqA * 360 + 'deg)';
-  // high.innerHTML = `${freq}, ${time}`
-  fadeOut(gainE, high.style, time, freq);
-});
-
-// I like how in this example the space continues to expand as the ratio of time/startTime increases past 1
-
-// // A
-// const maxFreqA = 550
-// const startTimeA = 2000
-// changeTone(maxFreqA, startTimeA, (freq, time) => {
-//   console.log(freq, time)
-//   srcA.frequency.value = freq
-//   low.style.left = `${(freq/maxFreqA) * window.innerWidth}px`
-//   low.style.top = `${(time/startTimeA) * window.innerHeight}px`
-//   low.style.transition = `${time}ms`
-// })
-
-// // C
-// const maxFreqC = 1308
-// const startTimeC = 200
-// changeTone(maxFreqC, startTimeC, (freq, time) => {
-//   console.log(freq, time)
-//   srcC.frequency.value = freq
-//   medium.style.left = `${(freq/maxFreqC) * window.innerWidth}px`
-//   medium.style.top = `${(time/startTimeC) * window.innerHeight}px`
-//   medium.style.transition = `${time}ms`
-// })
-
-// // E
-// const maxFreqE = 3296
-// const startTimeE = 600
-// changeTone(maxFreqE, startTimeC, (freq, time) => {
-//   console.log(freq, time)
-//   srcE.frequency.value = freq
-//   high.style.left = `${(freq/maxFreqE) * window.innerWidth}px`
-//   high.style.top = `${(time/startTimeE) * window.innerHeight}px`
-//   high.style.transition = `${time}ms`
-// })
+gain1.gain.value = MAX_VOLUME * 8;
+gain2.gain.value = MAX_VOLUME * 8;
+gain3.gain.value = MAX_VOLUME / 24;
 
 /***/ }),
-/* 11 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(12);
+var content = __webpack_require__(9);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // Prepare cssTransformation
 var transform;
@@ -825,8 +720,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/postcss-loader/lib/index.js??postcss!./progress.css", function() {
-			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/postcss-loader/lib/index.js??postcss!./progress.css");
+		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/postcss-loader/lib/index.js??postcss!./hum.css", function() {
+			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/postcss-loader/lib/index.js??postcss!./hum.css");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -836,7 +731,7 @@ if(false) {
 }
 
 /***/ }),
-/* 12 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(0)(undefined);
@@ -844,7 +739,7 @@ exports = module.exports = __webpack_require__(0)(undefined);
 
 
 // module
-exports.push([module.i, "body {\n  background-color: #001515\n}\n\n\n.shape {\n\n  -webkit-transition: 200ms;\n\n  transition: 200ms;\n  margin: 10px;\n  width: 100px;\n  height: 100px;\n  position: absolute;\n  border-radius: 100%;\n  background-color: #900;\n}\n", ""]);
+exports.push([module.i, "* {\n  margin: 0;\n  padding: 0;\n}\n\nbody {\n  background-color: #001515\n}\n\n.thing {\n  background-color: #c92f05;\n  position: absolute;\n  -webkit-box-shadow: 1px 1px 20px #001515;\n          box-shadow: 1px 1px 20px #001515;\n}\n", ""]);
 
 // exports
 
