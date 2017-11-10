@@ -658,12 +658,12 @@ function changeTone(maxFreq, time, cb) {
   }, Math.random() * time);
 }
 
-var fadeOut = function fadeOut(gain, style, time, freq) {
+var fadeOut = function fadeOut(gain, style, time) {
   gain.gain.value = MAX_VOLUME * 2;
   style.opacity = 0.5;
 
   // should be some value between 0 and .05
-  var fadeRate = freq / MAX_FREQ * 0.03;
+  var fadeRate = 0.003;
   var amt = 1 - fadeRate;
 
   if (amt > 1) {
@@ -726,8 +726,8 @@ changeTone(maxFreqA, startTimeA, function (freq, time) {
 });
 
 // C
-var maxFreqC = MIN_FREQ * 2;
-var startTimeC = 2000;
+var maxFreqC = MIN_FREQ * 1.5;
+var startTimeC = 800;
 var maxSizeC = 30;
 medium.style.maxWidth = maxSizeC + 'vw';
 medium.style.maxHeight = maxSizeC + 'vw';
@@ -748,8 +748,8 @@ changeTone(maxFreqC, startTimeC, function (freq, time) {
 });
 
 // E
-var maxFreqE = MIN_FREQ * 4;
-var startTimeE = 2600;
+var maxFreqE = MIN_FREQ * 2;
+var startTimeE = 800;
 var maxSizeE = 20;
 high.style.maxWidth = maxSizeE + 'vw';
 high.style.maxHeight = maxSizeE + 'vw';

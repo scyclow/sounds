@@ -44,12 +44,12 @@ function changeTone (maxFreq, time, cb) {
   )
 }
 
-const fadeOut = (gain, style, time, freq) => {
+const fadeOut = (gain, style, time) => {
   gain.gain.value = MAX_VOLUME * 2
   style.opacity = 0.5
 
   // should be some value between 0 and .05
-  const fadeRate = (freq/MAX_FREQ) * 0.03
+  const fadeRate = 0.003
   const amt = 1 - fadeRate
 
   if (amt > 1) {
@@ -104,8 +104,8 @@ changeTone(maxFreqA, startTimeA, (freq, time) => {
 })
 
 // C
-const maxFreqC = MIN_FREQ * 2
-const startTimeC = 2000
+const maxFreqC = MIN_FREQ * 1.5
+const startTimeC = 800
 const maxSizeC = 30
 medium.style.maxWidth = `${maxSizeC}vw`
 medium.style.maxHeight = `${maxSizeC}vw`
@@ -127,8 +127,8 @@ changeTone(maxFreqC, startTimeC, (freq, time) => {
 })
 
 // E
-const maxFreqE = MIN_FREQ * 4
-const startTimeE = 2600
+const maxFreqE = MIN_FREQ * 2
+const startTimeE = 800
 const maxSizeE = 20
 high.style.maxWidth = `${maxSizeE}vw`
 high.style.maxHeight = `${maxSizeE}vw`

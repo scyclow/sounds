@@ -739,7 +739,7 @@ exports = module.exports = __webpack_require__(0)(undefined);
 
 
 // module
-exports.push([module.i, "* {\n  margin: 0;\n  padding: 0;\n}\n\nbody {\n  background-color: #001515\n}\n\n.thing {\n  background-color: #c92f05;\n  position: absolute;\n  -webkit-box-shadow: 1px 1px 20px #001515;\n          box-shadow: 1px 1px 20px #001515;\n}\n", ""]);
+exports.push([module.i, "* {\n  margin: 0;\n  padding: 0;\n}\n\nbody {\n  background-color: #001515;\n}\n\n.thing {\n  background-color: #c92f05;\n  position: absolute;\n  -webkit-box-shadow: 1px 1px 20px #001515;\n          box-shadow: 1px 1px 20px #001515;\n}\n", ""]);
 
 // exports
 

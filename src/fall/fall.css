@@ -6,9 +6,9 @@ body {
   background-color: #001515;
 }
 #background {
-  background: linear-gradient(90deg, #00ffb9, #ffa702);
-  background-size: 150% 150%;
-  animation: Animate 80s ease infinite;
+  background: linear-gradient(135deg, #00ffb9, #ffa702);
+  background-size: 400% 400%;
+  animation: Animate 20s ease infinite;
   height: 100vh;
   width: 100vw;
   position: absolute;

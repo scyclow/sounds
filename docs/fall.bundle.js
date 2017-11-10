@@ -610,20 +610,8 @@ __webpack_require__(4);
 
 var _colors = __webpack_require__(6);
 
-// const ctx = new AudioContext();
-// const oscillator = ctx.createOscillator()
-// const gain = ctx.createGain()
-
-// oscillator.connect(gain)
-// gain.connect(ctx.destination)
-
-// gain.gain.value = 1
-// oscillator.frequency.value = 18
-
-// window.gain = gain
-// window.oscillator = oscillator
-
-// oscillator.start(0)
+var AudioContext = window.AudioContext || window.webkitAudioContext;
+var MAX_VOLUME = 0.03;
 
 var noop = function noop() {};
 function times(n) {
@@ -681,9 +669,96 @@ times(elemsPerWidth, function (w) {
   });
 });
 
+var fadeOut = function fadeOut(gain, time) {
+  var mod = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 1;
+
+  gain.gain.value = MAX_VOLUME * mod;
+
+  // should be some value between 0 and .05
+  var fadeRate = 0.0015;
+  var amt = 1 - fadeRate;
+
+  if (amt > 1) {
+    console.error('This is going to be too loud...');
+    console.error(amt);
+    debugger;
+    throw 'NOOOOOOOO';
+    return;
+  }
+
+  var interval = setInterval(function () {
+    gain.gain.value = gain.gain.value * amt;
+  }, time / 100);
+
+  setTimeout(function () {
+    return clearInterval(interval);
+  }, time - 5);
+};
+
+var transitionFreq = function transitionFreq(src, to, duration) {
+  var steps = 100;
+  var from_ = src.frequency.value;
+
+  var amt = (to - from_) / steps;
+  var interval = setInterval(function () {
+    src.frequency.value = src.frequency.value + amt;
+  }, duration / steps);
+
+  setTimeout(function () {
+    return clearInterval(interval);
+  }, duration);
+};
+
+function createSource() {
+  var srcType = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'sine';
+
+  var ctx = new AudioContext();
+
+  var source = ctx.createOscillator();
+  var gain = ctx.createGain();
+
+  source.connect(gain);
+  gain.connect(ctx.destination);
+
+  // window.gain = gain
+  gain.gain.value = MAX_VOLUME;
+  source.type = srcType;
+  source.start();
+  return { source: source, gain: gain };
+}
+
+var _createSource = createSource(),
+    source = _createSource.source,
+    gain = _createSource.gain;
+
+var _createSource2 = createSource(),
+    source2 = _createSource2.source,
+    gain2 = _createSource2.gain;
+
+var BASE_FREQ = 100;
+source.frequency.value = BASE_FREQ;
+source2.frequency.value = BASE_FREQ;
+
 var direction = 1;
 
 var changeDirection = function changeDirection() {
+  var t = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1200;
+
+  var soundDelay = Math.random() * 0.1;
+  setTimeout(function () {
+    if (direction === -1) {
+      transitionFreq(source, BASE_FREQ, t);
+      transitionFreq(source2, BASE_FREQ, t);
+    } else {
+      var newFreq = btwn(BASE_FREQ * 6, BASE_FREQ * 20);
+      transitionFreq(source, newFreq, t);
+      transitionFreq(source2, newFreq * 0.9, t);
+    }
+  }, soundDelay);
+
+  fadeOut(gain, t);
+  fadeOut(gain2, t, 0.3);
+
   elems.forEach(function (e) {
     // if (direction === -1) e.style.transition = `${0}ms`
     // else e.style.transition = `${btwn(movementTime * 1.6, movementTime * 1.9)}ms`
@@ -701,8 +776,18 @@ var changeDirection = function changeDirection() {
   console.log(direction);
   direction = direction * -1;
 };
+
+var changeDirectionInterval = function changeDirectionInterval(t) {
+  setTimeout(function () {
+    var time = btwn(movementTime * 0.8, movementTime * 2);
+    changeDirection(time);
+    changeDirectionInterval(time);
+  }, t);
+};
+
 changeDirection();
-setInterval(changeDirection, movementTime);
+changeDirection();
+changeDirectionInterval(1200);
 
 /***/ }),
 /* 4 */
@@ -744,7 +829,7 @@ exports = module.exports = __webpack_require__(0)(undefined);
 
 
 // module
-exports.push([module.i, "* {\n  padding: 0;\n  margin: 0;\n}\nbody {\n  background-color: #001515;\n}\n#background {\n  background: -webkit-gradient(linear, left top, right top, from(#00ffb9), to(#ffa702));\n  background: linear-gradient(90deg, #00ffb9, #ffa702);\n  background-size: 150% 150%;\n  -webkit-animation: Animate 80s ease infinite;\n          animation: Animate 80s ease infinite;\n  height: 100vh;\n  width: 100vw;\n  position: absolute;\n  overflow: hidden;\n}\n\n@-webkit-keyframes Animate {\n    0%{background-position:0% 50%}\n    50%{background-position:100% 50%}\n    100%{background-position:0% 50%}\n}\n", ""]);
+exports.push([module.i, "* {\n  padding: 0;\n  margin: 0;\n}\nbody {\n  background-color: #001515;\n}\n#background {\n  background: linear-gradient(135deg, #00ffb9, #ffa702);\n  background-size: 400% 400%;\n  -webkit-animation: Animate 20s ease infinite;\n          animation: Animate 20s ease infinite;\n  height: 100vh;\n  width: 100vw;\n  position: absolute;\n  overflow: hidden;\n}\n\n@-webkit-keyframes Animate {\n    0%{background-position:0% 50%}\n    50%{background-position:100% 50%}\n    100%{background-position:0% 50%}\n}\n", ""]);
 
 // exports
 

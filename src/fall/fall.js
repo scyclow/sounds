@@ -3,20 +3,8 @@
 import './fall.css'
 import { applyToHex } from '../utils/colors'
 
-// const ctx = new AudioContext();
-// const oscillator = ctx.createOscillator()
-// const gain = ctx.createGain()
-
-// oscillator.connect(gain)
-// gain.connect(ctx.destination)
-
-// gain.gain.value = 1
-// oscillator.frequency.value = 18
-
-// window.gain = gain
-// window.oscillator = oscillator
-
-// oscillator.start(0)
+const AudioContext = window.AudioContext || window.webkitAudioContext;
+const MAX_VOLUME = 0.03
 
 const noop = () => {}
 function times<T>(n: number, cb?: (number) => T = noop): Array<T> {
@@ -33,7 +21,6 @@ function btwn(x, y) {
 
   return (Math.random() * (high - low)) + low
 }
-
 
 
 const elemsPerWidth = 12;
@@ -71,9 +58,87 @@ times(elemsPerWidth, w => {
   })
 })
 
+const fadeOut = (gain, time, mod = 1) => {
+  gain.gain.value = MAX_VOLUME * mod
+
+  // should be some value between 0 and .05
+  const fadeRate = 0.0015
+  const amt = 1 - fadeRate
+
+  if (amt > 1) {
+    console.error('This is going to be too loud...')
+    console.error(amt)
+    debugger
+    throw 'NOOOOOOOO'
+    return
+  }
+
+  const interval = setInterval(
+    () => {
+      gain.gain.value = gain.gain.value * amt;
+    },
+    time / 100
+  )
+
+  setTimeout(() => clearInterval(interval), time - 5)
+}
+
+const transitionFreq = (src, to, duration) => {
+  const steps = 100
+  const from_ = src.frequency.value
+
+  const amt = (to - from_) / steps
+  const interval = setInterval(
+    () => {
+      src.frequency.value = src.frequency.value + amt;
+    },
+    duration / steps
+  )
+
+  setTimeout(() => clearInterval(interval), duration)
+}
+
+function createSource(srcType?: string = 'sine') {
+  const ctx = new AudioContext();
+
+  const source = ctx.createOscillator();
+  const gain = ctx.createGain();
+
+  source.connect(gain)
+  gain.connect(ctx.destination)
+
+  // window.gain = gain
+  gain.gain.value = MAX_VOLUME
+  source.type = srcType
+  source.start()
+  return {source, gain};
+}
+
+const { source, gain } = createSource()
+const { source: source2, gain: gain2 } = createSource()
+const BASE_FREQ = 100
+source.frequency.value = BASE_FREQ
+source2.frequency.value = BASE_FREQ
+
+
 let direction = 1
 
-const changeDirection = () => {
+const changeDirection = (t = 1200) => {
+  const soundDelay = Math.random() * 0.1
+  setTimeout(() => {
+    if (direction === -1) {
+      transitionFreq(source, BASE_FREQ, t)
+      transitionFreq(source2, BASE_FREQ, t)
+    } else {
+      const newFreq = btwn(BASE_FREQ*6, BASE_FREQ*20)
+      transitionFreq(source, newFreq, t)
+      transitionFreq(source2, newFreq * 0.9, t)
+    }
+  }, soundDelay)
+
+  fadeOut(gain, t)
+  fadeOut(gain2, t, 0.3)
+
   elems.forEach(e => {
     // if (direction === -1) e.style.transition = `${0}ms`
     // else e.style.transition = `${btwn(movementTime * 1.6, movementTime * 1.9)}ms`
@@ -91,5 +156,15 @@ const changeDirection = () => {
   console.log(direction)
   direction = direction * -1
 }
+
+const changeDirectionInterval = (t) => {
+  setTimeout(() => {
+    const time = btwn(movementTime * 0.8, movementTime * 2)
+    changeDirection(time)
+    changeDirectionInterval(time)
+  }, t)
+}
+
 changeDirection()
-setInterval(changeDirection, movementTime)
+changeDirection()
+changeDirectionInterval(1200)
