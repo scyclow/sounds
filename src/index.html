@@ -2,7 +2,7 @@
 <html>
 
 <head>
-  <title></title>
+  <title>Sounds</title>
   <META charset="UTF-8">
   <META name="viewport" content="width=device-width, initial-scale=1.0">
   <META http-equiv="X-UA-Compatible" content="IE=Edge" />
@@ -33,18 +33,25 @@
   </style>
 </head>
 
+<% const { projects, ext } = htmlWebpackPlugin.options %>
 <body>
 
-<div>
-  <ul>
-    <li><a href="./whistle.html">A</a></li>
-    <li><a href="./spin.html">B</a></li>
-    <li><a href="./progress.html">C</a></li>
-    <li><a href="./snapshot.html">D</a></li>
-    <li><a href="./fall.html">E</a></li>
-    <li><a href="./hum.html">F</a></li>
-  </ul>
-</div>
+  <div>
+    <ul>
+<%=
+      projects
+        .filter(project => project !== 'sandbox')
+        .map(project => `
+          <li>
+            <a href="./${project + ext}">
+              ${project.toUpperCase()}
+            </a>
+          </li>
+        `)
+        .join('')
+%>
+    </ul>
+  </div>
 </body>
 
 </html>

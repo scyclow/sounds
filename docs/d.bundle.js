@@ -60,64 +60,24 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 15);
+/******/ 	return __webpack_require__(__webpack_require__.s = 6);
 /******/ })
 /************************************************************************/
 /******/ ({
 
-/***/ 15:
+/***/ 6:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-__webpack_require__(16);
+__webpack_require__(7);
 
-function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
-
-var canvas = document.getElementById('canvas');
-var ctx = canvas.getContext('2d');
-// ctx.translate(0.5, 0.5);
-
-function draw() {
-  var width = window.innerWidth;
-  var height = window.innerHeight;
-
-  var w = Math.round(width / 5);
-  var h = Math.round(height / 5);
-
-  ctx.clearRect(0, 0, width, height);
-  ctx.beginPath();
-
-  for (var i = 0; i < 5000; i++) {
-    // for (let j = 0; j < height; j += h) {
-    var x = Math.round(Math.random() * (width / 3)) + 0.5;
-    var y = Math.round(Math.random() * (height / 3)) + 0.5;
-    ctx.moveTo(x, y);
-    ctx.arc(x, y, 3, 0, Math.PI * 2, true);
-  }
-
-  ctx.strokeStyle = '#fa8';
-  ctx.stroke();
-}
-
-setInterval(draw, 1000 / 60);
-draw();
-
-var sample = function sample(arr) {
-  return arr[Math.floor(arr.length * Math.random())];
-};
-
-function btwn(x, y) {
-  var high = Math.max(x, y);
-  var low = Math.min(x, y);
-
-  return Math.random() * (high - low) + low;
-}
+setTimeout(function () {
+  return location.reload();
+}, Math.max(150, 1300 * Math.random()));
 
 var AudioContext = window.AudioContext || window.webkitAudioContext;
-var MAX_VOLUME = 0.04;
-
 function createSource() {
   var srcType = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'sine';
 
@@ -130,65 +90,93 @@ function createSource() {
   gain.connect(ctx.destination);
 
   // window.gain = gain
-  gain.gain.value = MAX_VOLUME;
+  gain.gain.value = 0.04;
   source.type = srcType;
   source.start();
-  return { source: source, gain: gain };
+  return source;
 }
 
-var _createSource = createSource(),
-    src1 = _createSource.source,
-    gain1 = _createSource.gain;
+function randomDirection() {
+  var magnitude = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
 
-var _createSource2 = createSource(),
-    src2 = _createSource2.source,
-    gain2 = _createSource2.gain;
+  var direction = Math.random() < 0.5 ? -1 : 1;
+  var ammount = Math.random() * magnitude;
+  var logAmmount = direction < 0 ? ammount : ammount / (1 - ammount);
+  return 1 + logAmmount * direction;
+}
 
-var _createSource3 = createSource(),
-    src3 = _createSource3.source,
-    gain3 = _createSource3.gain;
-
-var _createSource4 = createSource(),
-    src4 = _createSource4.source,
-    gain4 = _createSource4.gain;
-
-var _createSource5 = createSource(),
-    src5 = _createSource5.source,
-    gain5 = _createSource5.gain;
-
-src1.frequency.value = 400;
-gain4.gain.value = MAX_VOLUME / 3;
-gain5.gain.value = MAX_VOLUME / 3;
-
-function randInterval(cb, i) {
-  cb();
+function changeTone(maxFreq, time, cb) {
+  var newTime = Math.max(17, time * randomDirection(0.2));
+  var newFreq = Math.random() * maxFreq;
+  cb(newFreq, time);
   setTimeout(function () {
-    return randInterval(cb, i);
-  }, btwn.apply(undefined, _toConsumableArray(i)));
+    return changeTone(maxFreq, newTime, cb);
+  }, Math.random() * time);
 }
 
-var ratios = [1.005, 1.05, 1.25, 1.3333333, 2, 1.5, 1.125];
+var low = document.getElementById('low');
+var medium = document.getElementById('medium');
+var high = document.getElementById('high');
 
-randInterval(function () {
-  src2.frequency.value = src1.frequency.value * sample(ratios);
-}, [20, 2000]);
+var srcA = createSource();
+var srcC = createSource();
+var srcE = createSource();
 
-randInterval(function () {
-  src3.frequency.value = src1.frequency.value * sample(ratios);
-}, [20, 2000]);
+// A
+var maxFreqA = 550;
+var startTimeA = 700;
+var maxSizeA = 40;
+low.style.maxWidth = maxSizeA + 'vw';
+low.style.maxHeight = maxSizeA + 'vw';
+changeTone(maxFreqA, startTimeA, function (freq, time) {
+  var size = (1 - freq / maxFreqA) * maxSizeA / 100 * window.innerWidth;
 
-randInterval(function () {
-  src4.frequency.value = src1.frequency.value * sample(ratios);
-  // src3.frequency.value = src1.frequency.value * sample(ratios)
-}, [10, 30]);
+  srcA.frequency.value = freq;
+  low.style.transition = time + 'ms';
+  low.style.top = (1 - freq / maxFreqA) * window.innerHeight + 'px';
+  low.style.left = Math.random() * window.innerWidth + 'px';
+  low.style.height = size + 'px';
+  low.style.width = size + 'px';
+  low.style.filter = 'hue-rotate(' + freq / maxFreqA * 360 + 'deg)';
+});
 
-randInterval(function () {
-  src5.frequency.value = src1.frequency.value * sample(ratios);
-}, [10, 30]);
+// C
+var maxFreqC = 1300;
+var startTimeC = 200;
+var maxSizeC = 30;
+medium.style.maxWidth = maxSizeC + 'vw';
+medium.style.maxHeight = maxSizeC + 'vw';
+changeTone(maxFreqC, startTimeC, function (freq, time) {
+  srcC.frequency.value = freq;
+  var size = (1 - freq / maxFreqC) * maxSizeC / 100 * window.innerWidth;
+  medium.style.transition = time + 'ms';
+  medium.style.top = (1 - freq / maxFreqC) * window.innerHeight + 'px';
+  medium.style.left = Math.random() * window.innerWidth + 'px';
+  medium.style.height = size + 'px';
+  medium.style.width = size + 'px';
+  medium.style.filter = 'hue-rotate(' + freq / maxFreqA * 360 + 'deg)';
+});
+
+// E
+var maxFreqE = 3200;
+var startTimeE = 600;
+var maxSizeE = 20;
+high.style.maxWidth = maxSizeE + 'vw';
+high.style.maxHeight = maxSizeE + 'vw';
+changeTone(maxFreqE, startTimeE, function (freq, time) {
+  srcE.frequency.value = freq;
+  var size = (1 - freq / maxFreqE) * maxSizeE / 100 * window.innerWidth;
+  high.style.transition = time + 'ms';
+  high.style.top = (1 - freq / maxFreqE) * window.innerHeight + 'px';
+  high.style.left = Math.random() * window.innerWidth + 'px';
+  high.style.height = size + 'px';
+  high.style.width = size + 'px';
+  high.style.filter = 'hue-rotate(' + freq / maxFreqA * 360 + 'deg)';
+});
 
 /***/ }),
 
-/***/ 16:
+/***/ 7:
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin

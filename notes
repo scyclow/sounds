@@ -1,0 +1,4 @@
+progress
+- should fade out, rather than fade in
+- only one node should be random. other should be a function of the root. sometimes *2, sometimes *1.33 etc
+- notes should animate sometimes

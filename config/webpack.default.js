@@ -3,6 +3,7 @@
 const path = require('path');
 const fs = require('fs');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+
 const html = (params) => new HtmlWebpackPlugin(params);
 const rootDir = (...paths) => path.join(__dirname, '..', ...paths);
 
@@ -18,19 +19,24 @@ const entry = projects.reduce((entry, project) => {
   entry[project] = `./${project}/${project}.js`;
   return entry
 }, {})
+
 const plugins = projects.map(project => {
   return html({
     template: rootDir(`src/${project}/${project}.html`),
     filename: project + '.html',
     inject: 'body',
-    chunks: [project]
+    title: project.toUpperCase(),
+    chunks: [project],
+    inlineSource: '.(js|css)$' // inline all css and js in prod
   })
 })
 
 plugins.push(html({
   template: rootDir('src/index.html'),
   filename: 'index.html',
-  chunks: []
+  chunks: [],
+  projects,
+  ext: process.env.NODE_ENV === 'development'  ? '.html' : ''
 }))
 
 module.exports = {
@@ -53,6 +59,10 @@ module.exports = {
         test: /\.js$/,
         exclude: /node_modules/,
         loader: "babel-loader"
+      },
+      {
+        test: /\.(jpg|png)$/,
+        loader: 'file-loader'
       }
     ]
   }

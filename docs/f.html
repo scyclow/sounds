@@ -1,4 +1,43 @@
-/******/ (function(modules) { // webpackBootstrap
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>F</title>
+  <META charset="UTF-8">
+  <META name="viewport" content="width=device-width, initial-scale=1.0">
+  <META http-equiv="X-UA-Compatible" content="IE=Edge" />
+  <META
+    name=""
+    content=""
+  >
+  <META
+    name="keywords"
+    content=""
+  >
+  <!-- <link rel="shortcut icon" type="image/x-icon" href="./favicon.ico" /> -->
+<style type="text/css">* {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: #001515;
+}
+
+.thing {
+  background-color: #c92f05;
+  position: absolute;
+  -webkit-box-shadow: 1px 1px 20px #001515;
+          box-shadow: 1px 1px 20px #001515;
+}
+</style></head>
+
+<body>
+
+<div id="window">
+  <div id="container"></div>
+</div>
+<script type="text/javascript">/******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
 /******/
@@ -60,53 +99,28 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 15);
+/******/ 	return __webpack_require__(__webpack_require__.s = 11);
 /******/ })
 /************************************************************************/
 /******/ ({
 
-/***/ 15:
+/***/ 11:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-__webpack_require__(16);
+__webpack_require__(12);
 
-function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+function times(n) {
+  var cb = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : noop;
 
-var canvas = document.getElementById('canvas');
-var ctx = canvas.getContext('2d');
-// ctx.translate(0.5, 0.5);
-
-function draw() {
-  var width = window.innerWidth;
-  var height = window.innerHeight;
-
-  var w = Math.round(width / 5);
-  var h = Math.round(height / 5);
-
-  ctx.clearRect(0, 0, width, height);
-  ctx.beginPath();
-
-  for (var i = 0; i < 5000; i++) {
-    // for (let j = 0; j < height; j += h) {
-    var x = Math.round(Math.random() * (width / 3)) + 0.5;
-    var y = Math.round(Math.random() * (height / 3)) + 0.5;
-    ctx.moveTo(x, y);
-    ctx.arc(x, y, 3, 0, Math.PI * 2, true);
+  var out = [];
+  for (var i = 0; i < n; i++) {
+    out.push(cb(i));
   }
-
-  ctx.strokeStyle = '#fa8';
-  ctx.stroke();
+  return out;
 }
-
-setInterval(draw, 1000 / 60);
-draw();
-
-var sample = function sample(arr) {
-  return arr[Math.floor(arr.length * Math.random())];
-};
 
 function btwn(x, y) {
   var high = Math.max(x, y);
@@ -114,6 +128,35 @@ function btwn(x, y) {
 
   return Math.random() * (high - low) + low;
 }
+
+var baseWidth = 1020;
+var baseHeight = 680;
+var adjW = window.innerWidth / baseWidth;
+var adjH = window.innerHeight / baseHeight;
+
+var squares = times(40, function (n) {
+  var div = document.createElement('div');
+  var height = btwn(50, 200) * adjH;
+  var width = btwn(50, 200) * adjW;
+  Object.assign(div.style, {
+    height: height + 'px',
+    width: width + 'px',
+    top: Math.random() * (window.innerHeight - height) + 'px',
+    left: Math.random() * (window.innerWidth - width) + 'px'
+  });
+  div.setAttribute('class', 'thing');
+  document.getElementById('container').appendChild(div);
+  return div;
+});
+
+var direction = 1;
+setInterval(function () {
+  direction = direction * -1;
+  squares.forEach(function (square) {
+    square.style.marginTop = direction * btwn(0, 5) + 'px';
+    square.style.marginLeft = direction * btwn(0, 5) + 'px';
+  });
+}, 1000 / 60);
 
 var AudioContext = window.AudioContext || window.webkitAudioContext;
 var MAX_VOLUME = 0.04;
@@ -148,51 +191,23 @@ var _createSource3 = createSource(),
     src3 = _createSource3.source,
     gain3 = _createSource3.gain;
 
-var _createSource4 = createSource(),
-    src4 = _createSource4.source,
-    gain4 = _createSource4.gain;
+src1.frequency.value = 50;
+src2.frequency.value = 55;
+src3.frequency.value = 2000;
 
-var _createSource5 = createSource(),
-    src5 = _createSource5.source,
-    gain5 = _createSource5.gain;
-
-src1.frequency.value = 400;
-gain4.gain.value = MAX_VOLUME / 3;
-gain5.gain.value = MAX_VOLUME / 3;
-
-function randInterval(cb, i) {
-  cb();
-  setTimeout(function () {
-    return randInterval(cb, i);
-  }, btwn.apply(undefined, _toConsumableArray(i)));
-}
-
-var ratios = [1.005, 1.05, 1.25, 1.3333333, 2, 1.5, 1.125];
-
-randInterval(function () {
-  src2.frequency.value = src1.frequency.value * sample(ratios);
-}, [20, 2000]);
-
-randInterval(function () {
-  src3.frequency.value = src1.frequency.value * sample(ratios);
-}, [20, 2000]);
-
-randInterval(function () {
-  src4.frequency.value = src1.frequency.value * sample(ratios);
-  // src3.frequency.value = src1.frequency.value * sample(ratios)
-}, [10, 30]);
-
-randInterval(function () {
-  src5.frequency.value = src1.frequency.value * sample(ratios);
-}, [10, 30]);
+gain1.gain.value = MAX_VOLUME * 8;
+gain2.gain.value = MAX_VOLUME * 8;
+gain3.gain.value = MAX_VOLUME / 24;
 
 /***/ }),
 
-/***/ 16:
+/***/ 12:
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ })
 
-/******/ });
+/******/ });</script></body>
+
+</html>

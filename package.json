@@ -4,8 +4,8 @@
   "description": "Boilerplate web project",
   "main": "index.js",
   "scripts": {
-    "start": "node ./scripts/start.js",
-    "build": "webpack --progress --config config/webpack.prod.js",
+    "start": "NODE_ENV=development node ./scripts/start.js",
+    "build": "rimraf docs && NODE_ENV=production webpack --progress --config config/webpack.prod.js",
     "generate": "node ./scripts/generate.js",
     "g": "node ./scripts/generate.js",
     "flow": "flow"
@@ -21,7 +21,9 @@
     "chalk": "^2.0.1",
     "css-loader": "^0.28.4",
     "extract-text-webpack-plugin": "^2.1.2",
+    "file-loader": "^1.1.5",
     "flow-bin": "^0.56.0",
+    "html-webpack-inline-source-plugin": "0.0.9",
     "html-webpack-plugin": "^2.29.0",
     "postcss-cssnext": "^3.0.2",
     "postcss-flexbugs-fixes": "^3.0.0",
