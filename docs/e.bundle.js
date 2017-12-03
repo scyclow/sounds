@@ -270,7 +270,7 @@ __webpack_require__(9);
 var _colors = __webpack_require__(10);
 
 var AudioContext = window.AudioContext || window.webkitAudioContext;
-var MAX_VOLUME = 0.03;
+var MAX_VOLUME = 0.04;
 
 var noop = function noop() {};
 function times(n) {

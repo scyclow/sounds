@@ -71,37 +71,38 @@
 "use strict";
 
 
-__webpack_require__(14);
+var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
 
-function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+__webpack_require__(14);
 
 var canvas = document.getElementById('canvas');
 var ctx = canvas.getContext('2d');
-// ctx.translate(0.5, 0.5);
+
+var width = window.innerWidth / 4;
+var height = window.innerHeight / 4;
+canvas.width = width;
+canvas.height = height;
+
+ctx.fillStyle = '#e97';
+ctx.strokeStyle = '#fb9';
+
+var amt = window.innerWidth * window.innerHeight / 135;
 
 function draw() {
-  var width = window.innerWidth;
-  var height = window.innerHeight;
-
-  var w = Math.round(width / 5);
-  var h = Math.round(height / 5);
-
   ctx.clearRect(0, 0, width, height);
   ctx.beginPath();
 
-  for (var i = 0; i < 5000; i++) {
-    // for (let j = 0; j < height; j += h) {
-    var x = Math.round(Math.random() * (width / 3)) + 0.5;
-    var y = Math.round(Math.random() * (height / 3)) + 0.5;
+  for (var i = 0; i < amt; i++) {
+    var x = Math.round(Math.random() * width);
+    var y = Math.round(Math.random() * height);
     ctx.moveTo(x, y);
     ctx.arc(x, y, 3, 0, Math.PI * 2, true);
   }
 
-  ctx.strokeStyle = '#fa8';
   ctx.stroke();
 }
 
-setInterval(draw, 1000 / 60);
+setInterval(draw, 1000 / 30);
 draw();
 
 var sample = function sample(arr) {
@@ -156,26 +157,61 @@ var _createSource5 = createSource(),
     src5 = _createSource5.source,
     gain5 = _createSource5.gain;
 
-src1.frequency.value = 400;
+var BASE_FREQ = 400;
+var MAX_TIME = 2000;
+var MIN_TIME = 20;
+var ratios = [1.005, 1.05, 1.25, 1.3333333, 2, 1.5, 1.125];
+
+src1.frequency.value = BASE_FREQ;
 gain4.gain.value = MAX_VOLUME / 3;
 gain5.gain.value = MAX_VOLUME / 3;
 
-function randInterval(cb, i) {
-  cb();
-  setTimeout(function () {
-    return randInterval(cb, i);
-  }, btwn.apply(undefined, _toConsumableArray(i)));
+var sizeUnit = window.innerWidth > window.innerHeight ? 'vh' : 'vw';
+
+function createElement() {
+  var el = document.createElement('div');
+  el.setAttribute('class', 'elem');
+  el.style.transition = MAX_TIME + 'ms';
+  document.getElementById('sub-container').appendChild(el);
+  var changeSize = function changeSize(size) {
+    el.style.width = size + sizeUnit;
+    el.style.height = size + sizeUnit;
+  };
+  changeSize(10);
+  return changeSize;
 }
 
-var ratios = [1.005, 1.05, 1.25, 1.3333333, 2, 1.5, 1.125];
+var change1 = createElement();
+var change2 = createElement();
+var change3 = createElement();
+var change4 = createElement();
+var change5 = createElement();
+var change6 = createElement();
+
+function randInterval(cb, _ref) {
+  var _ref2 = _slicedToArray(_ref, 2),
+      high = _ref2[0],
+      low = _ref2[1];
+
+  cb();
+  setTimeout(function () {
+    return randInterval(cb, [high, low]);
+  }, btwn(high, low));
+}
 
 randInterval(function () {
   src2.frequency.value = src1.frequency.value * sample(ratios);
-}, [20, 2000]);
+  change1(Math.random() * 90);
+  change2(Math.random() * 90);
+  change3(Math.random() * 90);
+}, [MAX_TIME, MIN_TIME]);
 
 randInterval(function () {
   src3.frequency.value = src1.frequency.value * sample(ratios);
-}, [20, 2000]);
+  change4(Math.random() * 90);
+  change5(Math.random() * 90);
+  change6(Math.random() * 90);
+}, [MAX_TIME, MIN_TIME]);
 
 randInterval(function () {
   src4.frequency.value = src1.frequency.value * sample(ratios);

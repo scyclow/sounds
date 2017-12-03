@@ -87,7 +87,7 @@ const maxSizeA = 40
 low.style.maxWidth = `${maxSizeA}vw`
 low.style.maxHeight = `${maxSizeA}vw`
 changeTone(maxFreqA, startTimeA, (freq, time) => {
-  console.log(freq, time)
+  // console.log(freq, time)
   const size = ((1 - freq/maxFreqA) * maxSizeA/100) * window.innerWidth
 
   srcA.frequency.value = freq
@@ -110,7 +110,7 @@ const maxSizeC = 30
 medium.style.maxWidth = `${maxSizeC}vw`
 medium.style.maxHeight = `${maxSizeC}vw`
 changeTone(maxFreqC, startTimeC, (freq, time) => {
-  console.log(freq, time)
+  // console.log(freq, time)
   srcC.frequency.value = freq
   const size = ((1 - freq/maxFreqC) * maxSizeC/100) * window.innerWidth
   medium.style.transition = `${time* 1.5}ms`
@@ -133,7 +133,7 @@ const maxSizeE = 20
 high.style.maxWidth = `${maxSizeE}vw`
 high.style.maxHeight = `${maxSizeE}vw`
 changeTone(maxFreqE, startTimeE, (freq, time) => {
-  console.log(freq, time)
+  // console.log(freq, time)
   srcE.frequency.value = freq
   const size = ((1 - freq/maxFreqE) * maxSizeE/100) * window.innerWidth
   high.style.transition = `${time* 1.5}ms`

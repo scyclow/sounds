@@ -2,33 +2,35 @@ import './g.css'
 
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
-// ctx.translate(0.5, 0.5);
+
+const width = window.innerWidth/4
+const height = window.innerHeight/4
+canvas.width = width
+canvas.height = height
+
+ctx.fillStyle = '#e97';
+ctx.strokeStyle = '#fb9';
+
+const amt = (window.innerWidth * window.innerHeight) / 135
 
 function draw() {
-  const width = window.innerWidth
-  const height = window.innerHeight
-
-  const w = Math.round(width/5)
-  const h = Math.round(height/5)
-
   ctx.clearRect(0, 0, width, height)
   ctx.beginPath();
 
-  for (let i = 0; i < 5000; i ++) {
-    // for (let j = 0; j < height; j += h) {
-    const x = Math.round(Math.random() * (width/3)) + 0.5
-    const y = Math.round(Math.random() * (height/3)) + 0.5
+  for (let i = 0; i < amt; i ++) {
+    const x = Math.round(Math.random() * width)
+    const y = Math.round(Math.random() * height)
     ctx.moveTo(x, y);
     ctx.arc(x, y, 3, 0, Math.PI * 2, true);
   }
 
-  ctx.strokeStyle = '#fa8';
   ctx.stroke();
 }
 
 
-setInterval(draw, 1000/60)
+setInterval(draw, 1000/30)
 draw()
+
 
 const sample = (arr) => arr[Math.floor(arr.length * Math.random())]
 
@@ -64,24 +66,59 @@ const { source: src3, gain: gain3 } = createSource()
 const { source: src4, gain: gain4 } = createSource()
 const { source: src5, gain: gain5 } = createSource()
 
-src1.frequency.value = 400
+
+const BASE_FREQ = 400
+const MAX_TIME = 2000
+const MIN_TIME = 20
+const ratios = [1.005,1.05, 1.25, 1.3333333, 2, 1.5, 1.125]
+
+src1.frequency.value = BASE_FREQ
 gain4.gain.value = MAX_VOLUME / 3
 gain5.gain.value = MAX_VOLUME / 3
 
-function randInterval(cb, i) {
-  cb()
-  setTimeout(() => randInterval(cb, i), btwn(...i))
+const sizeUnit = window.innerWidth > window.innerHeight
+  ? 'vh'
+  : 'vw'
+
+function createElement() {
+  const el = document.createElement('div')
+  el.setAttribute('class', 'elem')
+  el.style.transition = MAX_TIME + 'ms'
+  document.getElementById('sub-container').appendChild(el)
+  const changeSize = (size: number) => {
+    el.style.width = size + sizeUnit;
+    el.style.height = size + sizeUnit;
+  }
+  changeSize(10)
+  return changeSize
 }
 
-const ratios = [1.005,1.05, 1.25, 1.3333333, 2, 1.5, 1.125]
+const change1 = createElement()
+const change2 = createElement()
+const change3 = createElement()
+const change4 = createElement()
+const change5 = createElement()
+const change6 = createElement()
+
+function randInterval(cb, [high, low]) {
+  cb()
+  setTimeout(() => randInterval(cb, [high, low]), btwn(high, low))
+}
+
 
 randInterval(() => {
   src2.frequency.value = src1.frequency.value * sample(ratios)
-}, [20, 2000])
+  change1(Math.random() * 90)
+  change2(Math.random() * 90)
+  change3(Math.random() * 90)
+}, [MAX_TIME, MIN_TIME])
 
 randInterval(() => {
   src3.frequency.value = src1.frequency.value * sample(ratios)
-}, [20, 2000])
+  change4(Math.random() * 90)
+  change5(Math.random() * 90)
+  change6(Math.random() * 90)
+}, [MAX_TIME, MIN_TIME])
 
 randInterval(() => {
   src4.frequency.value = src1.frequency.value * sample(ratios)

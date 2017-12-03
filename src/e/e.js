@@ -4,7 +4,7 @@ import './e.css'
 import { applyToHex } from '../utils/colors'
 
 const AudioContext = window.AudioContext || window.webkitAudioContext;
-const MAX_VOLUME = 0.03
+const MAX_VOLUME = 0.04
 
 const noop = () => {}
 function times<T>(n: number, cb?: (number) => T = noop): Array<T> {
