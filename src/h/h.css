@@ -1,9 +1,9 @@
-/*
+
 :root {
-  --light: #efd5bc;
-  --dark: #ddc3aa;
+  --height: 60vh;
+  --width: 60vw;
 }
-*/
+
 * {
   margin: 0;
   padding: 0;
@@ -15,48 +15,43 @@ body {
 
 .c {
   position: absolute;
-  height: 50vh;
-  width: 80vw;
-  max-height: 80vw;
-  max-width: 50vh;
+  height: var(--height);
+  width: var(--width);
+  max-height: var(--width);
+  max-width: var(--height);
   border-radius: 3px;
+  opacity: 0.7;
 }
 #c1 {
-  background-color: #0AF;
-  box-shadow: 2px 2px 20px #0AF;
+  box-shadow: 2px 2px 20px #F00;
   animation: Animate1 5000ms linear infinite;
   z-index: 5;
 }
 #c2 {
-  background-color: #FA0;
   box-shadow: 2px 2px 20px #FA0;
   animation: Animate2 5000ms linear infinite;
   z-index: 4;
   transform: rotate(15deg);
 }
 #c3 {
-  background-color: #00F;
   box-shadow: 2px 2px 20px #00F;
   animation: Animate3 5000ms linear infinite;
   transform: rotate(30deg);
   z-index: 3;
 }
 #c4 {
-  background-color: #F00;
   box-shadow: 2px 2px 20px #F00;
   animation: Animate4 5000ms linear infinite;
   transform: rotate(45deg);
   z-index: 2;
 }
 #c5 {
-  background-color: #0F0;
   box-shadow: 2px 2px 20px #0F0;
   animation: Animate5 5000ms linear infinite;
   transform: rotate(60deg);
   z-index: 1;
 }
 #c6 {
-  background-color: #AF0;
   box-shadow: 2px 2px 20px #AF0;
   animation: Animate6 5000ms linear infinite;
   transform: rotate(75deg);
@@ -67,20 +62,20 @@ body {
 
 @-webkit-keyframes Animate1 {
     0% {
-      background-color: #0AF;
-      box-shadow: 2px 2px 20px #0AF;
+      background-color: #F00;
+      box-shadow: 2px 2px 20px #F00;
       transform: rotate(0deg);
     }
 
     50% {
-      background-color: #00F;
-      box-shadow: 2px 2px 20px #00F;
+      background-color: #FA0;
+      box-shadow: 2px 2px 20px #FA0;
       transform: rotate(180deg);
     }
 
     100% {
-      background-color: #0AF;
-      box-shadow: 2px 2px 20px #0AF;
+      background-color: #F00;
+      box-shadow: 2px 2px 20px #F00;
       transform: rotate(360deg);
     }
 }
@@ -94,8 +89,8 @@ body {
     }
 
     50% {
-      background-color: #F00;
-      box-shadow: 2px 2px 20px #F00;
+      background-color: #0F0;
+      box-shadow: 2px 2px 20px #0F0;
       transform: rotate(195deg);
     }
 
@@ -108,80 +103,80 @@ body {
 
 @-webkit-keyframes Animate3 {
     0% {
-      background-color: #00F;
-      box-shadow: 2px 2px 20px #00F;
+      background-color: #0F0;
+      box-shadow: 2px 2px 20px #0F0;
       transform: rotate(30deg);
     }
 
     50% {
-      background-color: #FF0;
-      box-shadow: 2px 2px 20px #FF0;
+      background-color: #0FA;
+      box-shadow: 2px 2px 20px #0FA;
       transform: rotate(210deg);
     }
 
     100% {
-      background-color: #00F;
-      box-shadow: 2px 2px 20px #00F;
+      background-color: #0F0;
+      box-shadow: 2px 2px 20px #0F0;
       transform: rotate(390deg);
     }
 }
 
 @-webkit-keyframes Animate4 {
     0% {
-      background-color: #F00;
-      box-shadow: 2px 2px 20px #F00;
+      background-color: #0FA;
+      box-shadow: 2px 2px 20px #0FA;
       transform: rotate(45deg);
     }
 
     50% {
-      background-color: #F0A;
-      box-shadow: 2px 2px 20px #F0A;
+      background-color: #00F;
+      box-shadow: 2px 2px 20px #00F;
       transform: rotate(225deg);
     }
 
     100% {
-      background-color: #F00;
-      box-shadow: 2px 2px 20px #F00;
+      background-color: #0FA;
+      box-shadow: 2px 2px 20px #0FA;
       transform: rotate(405deg);
     }
 }
 
 @-webkit-keyframes Animate5 {
     0% {
-      background-color: #0F0;
-      box-shadow: 2px 2px 20px #0F0;
+      background-color: #00F;
+      box-shadow: 2px 2px 20px #00F;
       transform: rotate(60deg);
     }
 
     50% {
-      background-color: #F0F;
-      box-shadow: 2px 2px 20px #F0F;
+      background-color: #A0F;
+      box-shadow: 2px 2px 20px #A0F;
       transform: rotate(240deg);
     }
 
     100% {
-      background-color: #0F0;
-      box-shadow: 2px 2px 20px #0F0;
+      background-color: #00F;
+      box-shadow: 2px 2px 20px #00F;
       transform: rotate(420deg);
     }
 }
 
 @-webkit-keyframes Animate6 {
     0% {
-      background-color: #AF0;
-      box-shadow: 2px 2px 20px #AF0;
+      background-color: #A0F;
+      box-shadow: 2px 2px 20px #A0F;
       transform: rotate(75deg);
     }
 
     50% {
-      background-color: #0FA;
-      box-shadow: 2px 2px 20px #0FA;
+      background-color: #F00;
+      box-shadow: 2px 2px 20px #F00;
       transform: rotate(255deg);
     }
 
     100% {
-      background-color: #AF0;
-      box-shadow: 2px 2px 20px #AF0;
+      background-color: #A0F;
+      box-shadow: 2px 2px 20px #A0F;
       transform: rotate(435deg);
     }
 }

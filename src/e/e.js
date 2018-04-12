@@ -23,10 +23,12 @@ function btwn(x, y) {
 }
 
 
-const elemsPerWidth = 12;
-const elemsPerHeight = 7;
+const elemsPerWidth = 9;
+const elemsPerHeight = 6;
 const movementTime = 1200;
-const movement = 80;
+const movement = 100;
+const maxSize = 300;
+const minSize = 250;
 
 
 const elems = []
@@ -51,7 +53,7 @@ function renderElem ({ left, top, size }) {
 
 times(elemsPerWidth, w => {
   times(elemsPerHeight, h => {
-    const size = btwn(125, 225)
+    const size = btwn(125, maxSize)
     const left = w * ((window.innerWidth) / elemsPerWidth) - 20
     const top = h * ((window.innerHeight) / elemsPerHeight) - 20
     renderElem({ left, top, size })

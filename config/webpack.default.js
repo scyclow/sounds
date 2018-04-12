@@ -40,8 +40,9 @@ plugins.push(html({
 }))
 
 module.exports = {
-  context: rootDir('src'),
   entry,
+  context: rootDir('src'),
+  mode: 'development',
   output: {
     path: rootDir('docs'),
     filename: '[name].bundle.js'

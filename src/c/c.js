@@ -2,10 +2,14 @@
 
 import './c.css'
 
+const sample = (arr) => arr[Math.floor(arr.length * Math.random())]
+const ratios = [1.005,1.05, 1.25, 1.3333333, 2, 1.5, 1.125]
+
+
 const AudioContext = window.AudioContext || window.webkitAudioContext;
 const MAX_VOLUME = 0.04
 const MAX_TIME = 15000
-const MIN_TIME = 17
+const MIN_TIME = 170
 const MIN_FREQ = 800
 const MAX_FREQ = 3000
 function createSource(srcType?: string = 'sine') {
@@ -31,15 +35,15 @@ function randomDirection(magnitude?: number = 1): number {
   return 1 + (logAmmount * direction);
 }
 
-function changeTone (maxFreq, time, cb) {
+function changeTone (getTone, time, cb) {
   const newTime = Math.min(
     Math.max(MIN_TIME, time * randomDirection(0.2)),
     MAX_TIME
   )
-  const newFreq = Math.random() * maxFreq
+  const newFreq = getTone()
   cb(newFreq, time)
   setTimeout(
-    () => changeTone(maxFreq, newTime, cb),
+    () => changeTone(getTone, newTime, cb),
     Math.random() * time
   )
 }
@@ -80,13 +84,18 @@ const { source: srcC, gain: gainC } = createSource()
 const { source: srcE, gain: gainE } = createSource()
 
 
+let toneA = 0;
 // A
 const maxFreqA = MIN_FREQ
-const startTimeA = 800
-const maxSizeA = 40
+const startTimeA = 4000
+const maxSizeA = 80
 low.style.maxWidth = `${maxSizeA}vw`
 low.style.maxHeight = `${maxSizeA}vw`
-changeTone(maxFreqA, startTimeA, (freq, time) => {
+const getToneA = () => {
+  toneA = Math.random() * maxFreqA
+  return toneA;
+}
+changeTone(getToneA, startTimeA, (freq, time) => {
   // console.log(freq, time)
   const size = ((1 - freq/maxFreqA) * maxSizeA/100) * window.innerWidth
 
@@ -103,13 +112,15 @@ changeTone(maxFreqA, startTimeA, (freq, time) => {
   fadeOut(gainA, low.style, time, freq)
 })
 
+
 // C
 const maxFreqC = MIN_FREQ * 1.5
-const startTimeC = 800
-const maxSizeC = 30
+const startTimeC = 1500
+const maxSizeC = 60
 medium.style.maxWidth = `${maxSizeC}vw`
 medium.style.maxHeight = `${maxSizeC}vw`
-changeTone(maxFreqC, startTimeC, (freq, time) => {
+const getToneC = () => toneA * sample([1.005,1.05, 1.2, 1.3333333])
+changeTone(getToneC, startTimeC, (freq, time) => {
   // console.log(freq, time)
   srcC.frequency.value = freq
   const size = ((1 - freq/maxFreqC) * maxSizeC/100) * window.innerWidth
@@ -128,11 +139,12 @@ changeTone(maxFreqC, startTimeC, (freq, time) => {
 
 // E
 const maxFreqE = MIN_FREQ * 2
-const startTimeE = 800
-const maxSizeE = 20
+const startTimeE = 1000
+const maxSizeE = 40
 high.style.maxWidth = `${maxSizeE}vw`
 high.style.maxHeight = `${maxSizeE}vw`
-changeTone(maxFreqE, startTimeE, (freq, time) => {
+const getToneE = () => toneA * sample([2.005, 1.5005])
+changeTone(getToneE, startTimeE, (freq, time) => {
   // console.log(freq, time)
   srcE.frequency.value = freq
   const size = ((1 - freq/maxFreqE) * maxSizeE/100) * window.innerWidth
