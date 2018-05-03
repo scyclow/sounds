@@ -3,15 +3,18 @@
 import './c.css'
 
 const sample = (arr) => arr[Math.floor(arr.length * Math.random())]
-const ratios = [1.005,1.05, 1.25, 1.3333333, 2, 1.5, 1.125]
-
 
 const AudioContext = window.AudioContext || window.webkitAudioContext;
 const MAX_VOLUME = 0.04
 const MAX_TIME = 15000
-const MIN_TIME = 170
+const MIN_TIME = 3000
 const MIN_FREQ = 800
-const MAX_FREQ = 3000
+
+// obj: gain.gain or source.frequency
+const smoothTo = (obj, ctx) => (value) => {
+  obj.exponentialRampToValueAtTime(value, ctx.currentTime + 0.3)
+}
+
 function createSource(srcType?: string = 'sine') {
   const ctx = new AudioContext();
 
@@ -25,7 +28,7 @@ function createSource(srcType?: string = 'sine') {
   gain.gain.value = MAX_VOLUME
   source.type = srcType
   source.start()
-  return {source, gain};
+  return {source, gain, ctx};
 }
 
 function randomDirection(magnitude?: number = 1): number {
@@ -79,9 +82,9 @@ const low = document.getElementById('low')
 const medium = document.getElementById('medium')
 const high = document.getElementById('high')
 
-const { source: srcA, gain: gainA } = createSource()
-const { source: srcC, gain: gainC } = createSource()
-const { source: srcE, gain: gainE } = createSource()
+const { source: srcA, gain: gainA, ctx: ctxA } = createSource()
+const { source: srcC, gain: gainC, ctx: ctxC } = createSource()
+const { source: srcE, gain: gainE, ctx: ctxE } = createSource()
 
 
 let toneA = 0;
@@ -95,11 +98,13 @@ const getToneA = () => {
   toneA = Math.random() * maxFreqA
   return toneA;
 }
+
+const smoothA = smoothTo(srcA.frequency, ctxA)
 changeTone(getToneA, startTimeA, (freq, time) => {
   // console.log(freq, time)
   const size = ((1 - freq/maxFreqA) * maxSizeA/100) * window.innerWidth
 
-  srcA.frequency.value = freq
+  smoothA(freq)
   low.style.transition = `${time* 1.5}ms`
   low.style.top = `${(1 - freq/maxFreqA) * (window.innerHeight - size/2)}px`
   low.style.left = `${Math.random() * (window.innerWidth - size/2)}px`
@@ -107,6 +112,7 @@ changeTone(getToneA, startTimeA, (freq, time) => {
   low.style.width = `${size}px`
   low.zIndex = Math.round(size)
   low.style.filter = `hue-rotate(${freq/maxFreqA * 360}deg)`
+  // low.style.color = 'white'
   // low.innerHTML = `${freq}, ${time}`
 
   fadeOut(gainA, low.style, time, freq)
@@ -119,10 +125,12 @@ const startTimeC = 1500
 const maxSizeC = 60
 medium.style.maxWidth = `${maxSizeC}vw`
 medium.style.maxHeight = `${maxSizeC}vw`
-const getToneC = () => toneA * sample([1.005,1.05, 1.2, 1.3333333])
+const getToneC = () => toneA * sample([1.005,1.05, 1.25])
+const smoothC = smoothTo(srcC.frequency, ctxC)
+
 changeTone(getToneC, startTimeC, (freq, time) => {
   // console.log(freq, time)
-  srcC.frequency.value = freq
+  smoothC(freq)
   const size = ((1 - freq/maxFreqC) * maxSizeC/100) * window.innerWidth
   medium.style.transition = `${time* 1.5}ms`
   medium.style.top = `${(1 - freq/maxFreqC) * (window.innerHeight - size/2)}px`
@@ -143,10 +151,13 @@ const startTimeE = 1000
 const maxSizeE = 40
 high.style.maxWidth = `${maxSizeE}vw`
 high.style.maxHeight = `${maxSizeE}vw`
-const getToneE = () => toneA * sample([2.005, 1.5005])
+const getToneE = () => toneA * sample([1.5005, 1.2505])
+const smoothE = smoothTo(srcE.frequency, ctxE)
+
 changeTone(getToneE, startTimeE, (freq, time) => {
   // console.log(freq, time)
-  srcE.frequency.value = freq
+  smoothE(freq)
+
   const size = ((1 - freq/maxFreqE) * maxSizeE/100) * window.innerWidth
   high.style.transition = `${time* 1.5}ms`
   high.style.top = `${(1 - freq/maxFreqE) * (window.innerHeight - size/2)}px`
