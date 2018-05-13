@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>I</title>
+
+  <META charset="UTF-8">
+  <META name="viewport" content="width=device-width, initial-scale=1.0">
+  <META http-equiv="X-UA-Compatible" content="IE=Edge" />
+  <META
+    name=""
+    content=""
+  >
+  <META
+    name="keywords"
+    content=""
+  >
+  <!-- <link rel="shortcut icon" type="image/x-icon" href="./favicon.ico" /> -->
+<style type="text/css">/*
+:root {
+  --light: #efd5bc;
+  --dark: #ddc3aa;
+}
+*/
+* {
+  margin: 0;
+  padding: 0;
+}
+</style></head>
+
+<body>
+  <canvas id="canvas"></canvas>
+<script type="text/javascript">/******/ (function(modules) { // webpackBootstrap
+/******/ 	// The module cache
+/******/ 	var installedModules = {};
+/******/
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/
+/******/ 		// Check if module is in cache
+/******/ 		if(installedModules[moduleId]) {
+/******/ 			return installedModules[moduleId].exports;
+/******/ 		}
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = installedModules[moduleId] = {
+/******/ 			i: moduleId,
+/******/ 			l: false,
+/******/ 			exports: {}
+/******/ 		};
+/******/
+/******/ 		// Execute the module function
+/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+/******/
+/******/ 		// Flag the module as loaded
+/******/ 		module.l = true;
+/******/
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/
+/******/
+/******/ 	// expose the modules object (__webpack_modules__)
+/******/ 	__webpack_require__.m = modules;
+/******/
+/******/ 	// expose the module cache
+/******/ 	__webpack_require__.c = installedModules;
+/******/
+/******/ 	// define getter function for harmony exports
+/******/ 	__webpack_require__.d = function(exports, name, getter) {
+/******/ 		if(!__webpack_require__.o(exports, name)) {
+/******/ 			Object.defineProperty(exports, name, {
+/******/ 				configurable: false,
+/******/ 				enumerable: true,
+/******/ 				get: getter
+/******/ 			});
+/******/ 		}
+/******/ 	};
+/******/
+/******/ 	// define __esModule on exports
+/******/ 	__webpack_require__.r = function(exports) {
+/******/ 		Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 	};
+/******/
+/******/ 	// getDefaultExport function for compatibility with non-harmony modules
+/******/ 	__webpack_require__.n = function(module) {
+/******/ 		var getter = module && module.__esModule ?
+/******/ 			function getDefault() { return module['default']; } :
+/******/ 			function getModuleExports() { return module; };
+/******/ 		__webpack_require__.d(getter, 'a', getter);
+/******/ 		return getter;
+/******/ 	};
+/******/
+/******/ 	// Object.prototype.hasOwnProperty.call
+/******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
+/******/
+/******/ 	// __webpack_public_path__
+/******/ 	__webpack_require__.p = "";
+/******/
+/******/
+/******/ 	// Load entry module and return exports
+/******/ 	return __webpack_require__(__webpack_require__.s = "./i/i.js");
+/******/ })
+/************************************************************************/
+/******/ ({
+
+/***/ "./i/i.css":
+/*!*****************!*\
+  !*** ./i/i.css ***!
+  \*****************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("// removed by extract-text-webpack-plugin\n\n//# sourceURL=webpack:///./i/i.css?");
+
+/***/ }),
+
+/***/ "./i/i.js":
+/*!****************!*\
+  !*** ./i/i.js ***!
+  \****************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+eval("\n\nvar _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if (\"value\" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();\n\n__webpack_require__(/*! ./i.css */ \"./i/i.css\");\n\nfunction _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError(\"Cannot call a class as a function\"); } }\n\nvar _marked = [mapIter, filterIter, _times, newState, createFrames].map(regeneratorRuntime.mark);\n\nvar canvas = document.getElementById('canvas');\nvar ctx = canvas.getContext('2d');\n\nvar width = window.innerWidth;\nvar height = window.innerHeight;\ncanvas.width = width;\ncanvas.height = height;\n\n// ctx.fillStyle = '#000';\n// ctx.strokeStyle = '#fb9';\n\nvar sample = function sample(arr) {\n  return arr[Math.floor(arr.length * Math.random())];\n};\n\nfunction btwn(x, y) {\n  var high = Math.max(x, y);\n  var low = Math.min(x, y);\n\n  return Math.random() * (high - low) + low;\n}\n\nfunction mapIter(fn, iter) {\n  var i, _iteratorNormalCompletion, _didIteratorError, _iteratorError, _iterator, _step, x;\n\n  return regeneratorRuntime.wrap(function mapIter$(_context) {\n    while (1) {\n      switch (_context.prev = _context.next) {\n        case 0:\n          i = 0;\n          _iteratorNormalCompletion = true;\n          _didIteratorError = false;\n          _iteratorError = undefined;\n          _context.prev = 4;\n          _iterator = iter[Symbol.iterator]();\n\n        case 6:\n          if (_iteratorNormalCompletion = (_step = _iterator.next()).done) {\n            _context.next = 13;\n            break;\n          }\n\n          x = _step.value;\n          _context.next = 10;\n          return fn(x, i++);\n\n        case 10:\n          _iteratorNormalCompletion = true;\n          _context.next = 6;\n          break;\n\n        case 13:\n          _context.next = 19;\n          break;\n\n        case 15:\n          _context.prev = 15;\n          _context.t0 = _context['catch'](4);\n          _didIteratorError = true;\n          _iteratorError = _context.t0;\n\n        case 19:\n          _context.prev = 19;\n          _context.prev = 20;\n\n          if (!_iteratorNormalCompletion && _iterator.return) {\n            _iterator.return();\n          }\n\n        case 22:\n          _context.prev = 22;\n\n          if (!_didIteratorError) {\n            _context.next = 25;\n            break;\n          }\n\n          throw _iteratorError;\n\n        case 25:\n          return _context.finish(22);\n\n        case 26:\n          return _context.finish(19);\n\n        case 27:\n        case 'end':\n          return _context.stop();\n      }\n    }\n  }, _marked[0], this, [[4, 15, 19, 27], [20,, 22, 26]]);\n}\n\nfunction filterIter(fn, iter) {\n  var i, _iteratorNormalCompletion2, _didIteratorError2, _iteratorError2, _iterator2, _step2, x;\n\n  return regeneratorRuntime.wrap(function filterIter$(_context2) {\n    while (1) {\n      switch (_context2.prev = _context2.next) {\n        case 0:\n          i = 0;\n          _iteratorNormalCompletion2 = true;\n          _didIteratorError2 = false;\n          _iteratorError2 = undefined;\n          _context2.prev = 4;\n          _iterator2 = iter[Symbol.iterator]();\n\n        case 6:\n          if (_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done) {\n            _context2.next = 14;\n            break;\n          }\n\n          x = _step2.value;\n\n          if (!fn(x, i++)) {\n            _context2.next = 11;\n            break;\n          }\n\n          _context2.next = 11;\n          return x;\n\n        case 11:\n          _iteratorNormalCompletion2 = true;\n          _context2.next = 6;\n          break;\n\n        case 14:\n          _context2.next = 20;\n          break;\n\n        case 16:\n          _context2.prev = 16;\n          _context2.t0 = _context2['catch'](4);\n          _didIteratorError2 = true;\n          _iteratorError2 = _context2.t0;\n\n        case 20:\n          _context2.prev = 20;\n          _context2.prev = 21;\n\n          if (!_iteratorNormalCompletion2 && _iterator2.return) {\n            _iterator2.return();\n          }\n\n        case 23:\n          _context2.prev = 23;\n\n          if (!_didIteratorError2) {\n            _context2.next = 26;\n            break;\n          }\n\n          throw _iteratorError2;\n\n        case 26:\n          return _context2.finish(23);\n\n        case 27:\n          return _context2.finish(20);\n\n        case 28:\n        case 'end':\n          return _context2.stop();\n      }\n    }\n  }, _marked[1], this, [[4, 16, 20, 28], [21,, 23, 27]]);\n}\n\nvar Lazy = function () {\n  function Lazy(iter) {\n    _classCallCheck(this, Lazy);\n\n    this.iter = iter;\n  }\n\n  _createClass(Lazy, [{\n    key: Symbol.iterator,\n    value: regeneratorRuntime.mark(function value() {\n      return regeneratorRuntime.wrap(function value$(_context3) {\n        while (1) {\n          switch (_context3.prev = _context3.next) {\n            case 0:\n              return _context3.delegateYield(this.iter, 't0', 1);\n\n            case 1:\n            case 'end':\n              return _context3.stop();\n          }\n        }\n      }, value, this);\n    })\n  }, {\n    key: 'map',\n    value: function map(fn) {\n      return new Lazy(mapIter(fn, this.iter));\n    }\n  }, {\n    key: 'filter',\n    value: function filter(fn) {\n      return new Lazy(filterIter(fn, this.iter));\n    }\n  }, {\n    key: 'forEach',\n    value: function forEach(fn) {\n      var i = 0;\n      var _iteratorNormalCompletion3 = true;\n      var _didIteratorError3 = false;\n      var _iteratorError3 = undefined;\n\n      try {\n        for (var _iterator3 = this.iter[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {\n          var x = _step3.value;\n\n          var result = fn(x, i++);\n          if (result === false) return;\n        }\n      } catch (err) {\n        _didIteratorError3 = true;\n        _iteratorError3 = err;\n      } finally {\n        try {\n          if (!_iteratorNormalCompletion3 && _iterator3.return) {\n            _iterator3.return();\n          }\n        } finally {\n          if (_didIteratorError3) {\n            throw _iteratorError3;\n          }\n        }\n      }\n    }\n  }, {\n    key: 'call',\n    value: function call() {\n      var output = [];\n      var _iteratorNormalCompletion4 = true;\n      var _didIteratorError4 = false;\n      var _iteratorError4 = undefined;\n\n      try {\n        for (var _iterator4 = this.iter[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {\n          var x = _step4.value;\n          output.push(x);\n        }\n      } catch (err) {\n        _didIteratorError4 = true;\n        _iteratorError4 = err;\n      } finally {\n        try {\n          if (!_iteratorNormalCompletion4 && _iterator4.return) {\n            _iterator4.return();\n          }\n        } finally {\n          if (_didIteratorError4) {\n            throw _iteratorError4;\n          }\n        }\n      }\n\n      return output;\n    }\n  }]);\n\n  return Lazy;\n}();\n\nfunction _times(n) {\n  var i;\n  return regeneratorRuntime.wrap(function _times$(_context4) {\n    while (1) {\n      switch (_context4.prev = _context4.next) {\n        case 0:\n          i = 0;\n\n        case 1:\n          if (!(i < n)) {\n            _context4.next = 7;\n            break;\n          }\n\n          _context4.next = 4;\n          return i;\n\n        case 4:\n          i++;\n          _context4.next = 1;\n          break;\n\n        case 7:\n        case 'end':\n          return _context4.stop();\n      }\n    }\n  }, _marked[2], this);\n}\n\nfunction times(n) {\n  return new Lazy(_times(n));\n}\n\nfunction newState() {\n  var state, next;\n  return regeneratorRuntime.wrap(function newState$(_context5) {\n    while (1) {\n      switch (_context5.prev = _context5.next) {\n        case 0:\n          state = initialState();\n\n        case 1:\n          if (false) {}\n\n          next = state.map(update).call();\n          _context5.next = 5;\n          return next;\n\n        case 5:\n          state = new Lazy(next);\n          _context5.next = 1;\n          break;\n\n        case 8:\n        case 'end':\n          return _context5.stop();\n      }\n    }\n  }, _marked[3], this);\n}\n\n// ctx.shadowBlur = 40\n// ctx.shadowColor = 'black'\n\nfunction createFrames() {\n  var state;\n  return regeneratorRuntime.wrap(function createFrames$(_context6) {\n    while (1) {\n      switch (_context6.prev = _context6.next) {\n        case 0:\n          state = newState();\n\n        case 1:\n          if (false) {}\n\n          ctx.clearRect(0, 0, width, height);\n          ctx.beginPath();\n\n          state.next().value.forEach(function (_ref) {\n            var x = _ref.x,\n                y = _ref.y,\n                radius = _ref.radius;\n\n            ctx.moveTo(x, y);\n            ctx.arc(x, y, radius, 0, Math.PI * 2, true);\n          });\n\n          ctx.stroke();\n          ctx.fill();\n\n          _context6.next = 9;\n          return;\n\n        case 9:\n          _context6.next = 1;\n          break;\n\n        case 11:\n        case 'end':\n          return _context6.stop();\n      }\n    }\n  }, _marked[4], this);\n}\n\nvar frames = createFrames();\nvar draw = function draw(i) {\n  frames.next();\n  // setTimeout(() =>\n  window.requestAnimationFrame(draw);\n  // , 300)\n};\n\nvar AudioContext = window.AudioContext || window.webkitAudioContext;\nvar MAX_VOLUME = 0.07;\nfunction createSource() {\n  var srcType = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'sawtooth';\n\n  var ctx = new AudioContext();\n\n  var source = ctx.createOscillator();\n  var gain = ctx.createGain();\n\n  source.connect(gain);\n  gain.connect(ctx.destination);\n\n  // window.gain = gain\n  gain.gain.value = MAX_VOLUME;\n  source.type = srcType;\n  source.start();\n  return { source: source, gain: gain };\n}\n\n// Circle State\nvar initialState = function initialState() {\n  return times(1400).map(function () {\n    return {\n      radius: 5,\n      direction: Math.random() < 0.5 ? 1 : -1,\n      x: Math.random() * width,\n      y: Math.random() * height + 5\n    };\n  });\n};\n\nvar update = function update(_ref2) {\n  var radius = _ref2.radius,\n      x = _ref2.x,\n      y = _ref2.y,\n      direction = _ref2.direction;\n\n  radius = radius + 1 * direction;\n  y -= 2;\n  if (direction > 0 && radius > 50 * Math.random()) {\n    direction = direction * -1;\n  } else if (radius < 0) {\n    radius = 0;\n    direction = 1;\n    x = Math.random() * width;\n    y = Math.random() * height + 5;\n  }\n\n  return {\n    x: x,\n    y: y,\n    radius: radius,\n    direction: direction\n  };\n};\n\n// Sound\n// const { source: src1 } = createSource()\n\nvar _createSource = createSource(),\n    src2 = _createSource.source;\n\nvar _createSource2 = createSource(),\n    src3 = _createSource2.source;\n\n// src1.frequency.value = 3.054\n\n\nsrc2.frequency.value = 7.14524;\nsrc3.frequency.value = 8.342;\n\ndraw();\n\n//# sourceURL=webpack:///./i/i.js?");
+
+/***/ })
+
+/******/ });</script></body>
+
+</html>

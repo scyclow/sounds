@@ -11,7 +11,9 @@ const createFile = (name, ext, cb=noop) => {
     if (err) console.error(err);
     const path = `${dirName}/${name}.${ext}`
 
-    fs.writeFile(path, template, (err) => {
+    const file = template.replace(`import './sandbox.css'`, `import './${name}.css'`)
+
+    fs.writeFile(path, file, (err) => {
       if (err) {
         cb(err)
         console.log(`Error creating ${name}.${ext}: ${err}`)
