@@ -2,17 +2,19 @@
 
 import './b.css'
 
-function changeTone (src, maxFreq, time) {
-  setTimeout(() => {
-    src.frequency.value = Math.random() * maxFreq
-    console.log(time)
-    changeTone(src, maxFreq, time)
-  }, time)
+function btwn(x, y) {
+  const high = Math.max(x, y)
+  const low = Math.min(x, y)
+
+  return (Math.random() * (high - low)) + low
 }
 
+function changeTone (smooth, freq, time) {
+  setInterval(() => smooth(freq()), time)
+}
 
 // LFO FILTER
-const ctx = new AudioContext();
+const ctx = new (window.AudioContext || window.webkitAudioContext);
 const oscillator = ctx.createOscillator()
 const LFO = ctx.createOscillator()
 const VCA = ctx.createGain()
@@ -34,4 +36,12 @@ window.lfo = LFO
 window.osc = oscillator
 window.gain = VCA
 
-changeTone(oscillator, 2000)
+const smoothTo = (obj, ctx) => value => {
+  obj.exponentialRampToValueAtTime(value, ctx.currentTime + 0.3)
+}
+
+changeTone(
+  (f) => smoothTo(oscillator.frequency, ctx)(f),
+  () => btwn(1200, 600),
+  125
+)

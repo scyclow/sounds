@@ -57,14 +57,14 @@ function createSource(srcType?: string = 'sine') {
   gain.gain.value = MAX_VOLUME
   source.type = srcType
   source.start()
-  return {source, gain};
+  return {source, gain, ctx};
 }
 
-const { source: src1, gain: gain1 } = createSource()
-const { source: src2, gain: gain2 } = createSource()
-const { source: src3, gain: gain3 } = createSource()
-const { source: src4, gain: gain4 } = createSource()
-const { source: src5, gain: gain5 } = createSource()
+const { source: src1, gain: gain1, ctx: ctx1 } = createSource()
+const { source: src2, gain: gain2, ctx: ctx2 } = createSource()
+const { source: src3, gain: gain3, ctx: ctx3 } = createSource()
+const { source: src4, gain: gain4, ctx: ctx4 } = createSource()
+const { source: src5, gain: gain5, ctx: ctx5 } = createSource()
 
 
 const BASE_FREQ = 400
@@ -105,27 +105,36 @@ function randInterval(cb, [high, low]) {
   setTimeout(() => randInterval(cb, [high, low]), btwn(high, low))
 }
 
+let audioTransitionTime = 0.2
+setInterval(() => audioTransitionTime += 0.02, 1000)
+
+const smoothTo = (obj, ctx) => value => {
+  obj.exponentialRampToValueAtTime(value, ctx.currentTime + audioTransitionTime)
+}
+
+const smoothFreq2 = smoothTo(src2.frequency, ctx2)
+const smoothFreq3 = smoothTo(src3.frequency, ctx3)
+const smoothFreq4 = smoothTo(src4.frequency, ctx4)
+const smoothFreq5 = smoothTo(src5.frequency, ctx5)
 
 randInterval(() => {
-  src2.frequency.value = src1.frequency.value * sample(ratios)
+  smoothFreq2(src1.frequency.value * sample(ratios))
   change1(Math.random() * 90)
   change2(Math.random() * 90)
   change3(Math.random() * 90)
 }, [MAX_TIME, MIN_TIME])
 
 randInterval(() => {
-  src3.frequency.value = src1.frequency.value * sample(ratios)
+  smoothFreq3(src1.frequency.value * sample(ratios))
   change4(Math.random() * 90)
   change5(Math.random() * 90)
   change6(Math.random() * 90)
 }, [MAX_TIME, MIN_TIME])
 
 randInterval(() => {
-  src4.frequency.value = src1.frequency.value * sample(ratios)
-  // src3.frequency.value = src1.frequency.value * sample(ratios)
+  smoothFreq4(src1.frequency.value * sample(ratios))
 }, [10, 30])
 
 randInterval(() => {
   src5.frequency.value = src1.frequency.value * sample(ratios)
 }, [10, 30])
-

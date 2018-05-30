@@ -180,12 +180,4 @@ const { source: src3 } = createSource()
 src2.frequency.value = 7.14524
 src3.frequency.value = 8.342
 
-
-
-
-
-
-
 draw()
-
-

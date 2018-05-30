@@ -16,7 +16,7 @@ function createSource() {
 
   gain.gain.value = 0.04
   source.start()
-  return {source, panner};
+  return {source, panner, ctx};
 }
 
 function randomDirection(magnitude?: number = 1): number {
@@ -26,10 +26,10 @@ function randomDirection(magnitude?: number = 1): number {
   return 1 + (logAmmount * direction);
 }
 
-function changeTone (src, maxFreq, time) {
+function changeTone (change, maxFreq, time) {
   setTimeout(() => {
-    src.frequency.value = Math.random() * maxFreq
-    changeTone(src, maxFreq, time)
+    change(Math.random() * maxFreq)
+    changeTone(change, maxFreq, time)
   }, Math.random() * time)
 }
 
@@ -41,11 +41,15 @@ function changePanner(panner, direction) {
   }, 2500)
 }
 
-const { source: source1, panner: panner1 } = createSource()
-const { source: source2, panner: panner2 } = createSource()
+const { source: source1, panner: panner1, ctx: ctx1 } = createSource()
+const { source: source2, panner: panner2, ctx: ctx2 } = createSource()
 
-changeTone(source1, 3500, 300)
-changeTone(source2, 4000, 200)
+
+const smoothTo = (obj, ctx) => value => {
+  obj.exponentialRampToValueAtTime(value, ctx.currentTime + 0.2)
+}
+changeTone(smoothTo(source1.frequency, ctx1), 3500, 300)
+changeTone(smoothTo(source2.frequency, ctx2), 4000, 200)
 
 changePanner(panner1, 1)
 changePanner(panner2, -1)
