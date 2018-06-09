@@ -1,5 +1,6 @@
 
 import './i.css';
+import 'babel-polyfill'
 
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
@@ -172,12 +173,16 @@ const update = ({ radius, x, y, direction }) => {
 }
 
 // Sound
-// const { source: src1 } = createSource()
+const { source: src1 } = createSource('sine')
+
 const { source: src2 } = createSource()
 const { source: src3 } = createSource()
+const { source: src4 } = createSource()
 
-// src1.frequency.value = 3.054
+src1.frequency.value = 50
+
 src2.frequency.value = 7.14524
 src3.frequency.value = 8.342
+src4.frequency.value = 5.732
 
 draw()
